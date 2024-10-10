@@ -3,9 +3,9 @@ import { StyleSheet } from "react-native";
 export const textStyles = StyleSheet.create({
   heading: {
     fontSize: 24,
-    fontWeight: "700",
+    fontWeight: "500",
     lineHeight: 32,
-    fontFamily: "Roboto_700Bold",
+    fontFamily: "Roboto_500Medium",
   },
   subheading: {
     fontSize: 18,

@@ -8,20 +8,28 @@ export default function Index() {
     <SafeAreaView
       style={{
         flex: 1,
-        padding: spacing.large,
       }}
     >
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: spacing.small,
+          gap: spacing.medium,
+          paddingHorizontal: spacing.medium,
+          paddingVertical: spacing.extraLarge,
         }}
       >
-        <BookHeart size={48} color={colors.primary} />
-        <Text style={[textStyles.heading, { color: colors.primary }]}>
-          Gourney
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <BookHeart strokeWidth={1.2} size={48} color={colors.primary} />
+        </View>
+        <Text style={[textStyles.heading, { textAlign: "center" }]}>
+          Welcome To Gourney
+        </Text>
+        <Text style={[textStyles.body, { textAlign: "center" }]}>
+          Sign up or log in to begin your journey of mindful journaling.
         </Text>
       </View>
     </SafeAreaView>
