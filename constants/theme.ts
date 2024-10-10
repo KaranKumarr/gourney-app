@@ -34,7 +34,7 @@ export const colors = {
   textLight: "#18181B",
   textDark: "#FAFAFA",
   cardDark: "#2F2F31",
-  cardLight: "#C8C8C8",
+  cardLight: "#E7E7E7FF",
 };
 
 export const spacing = {
