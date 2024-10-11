@@ -11,12 +11,17 @@ import GoogleIcon from "@/assets/google.svg";
 import FacebookIcon from "@/assets/facebook.svg";
 import AppleIcon from "@/assets/apple.svg";
 import { Eye, EyeClosed } from "lucide-react-native";
+import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 const SignUpForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
 
   return (
-    <View style={{ flex: 1, justifyContent: "space-between" }}>
+    <Animated.View
+      entering={FadeInLeft.duration(150).delay(150)}
+      exiting={FadeOutLeft.duration(150)}
+      style={{ flex: 1, justifyContent: "space-between" }}
+    >
       <View style={{ gap: spacing.small }}>
         <Text style={[textStyles.subheading]}>Create new account</Text>
         <Text
@@ -122,7 +127,7 @@ const SignUpForm = () => {
           <FacebookIcon width={32} height={32} />
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

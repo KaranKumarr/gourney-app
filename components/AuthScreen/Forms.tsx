@@ -8,9 +8,15 @@ import Animated, {
 import { colors, spacing, textStyles } from "@/constants/theme";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
+import {
+  GestureEvent,
+  PanGestureHandler,
+  PanGestureHandlerEventPayload,
+} from "react-native-gesture-handler";
 
 const Forms = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const [lastGesture, setLastGesture] = useState(0);
 
   const leftPos = useSharedValue<number>(0);
 
@@ -25,71 +31,86 @@ const Forms = () => {
       leftPos.value = 0;
     }
   }, [isLogin]);
+  const handleGesture = (evt: GestureEvent<PanGestureHandlerEventPayload>) => {
+    const delay = 300;
 
+    // this makes sure animation doesn't face "bounce" issue
+    if (lastGesture >= Date.now() - delay) return;
+    setLastGesture(Date.now());
+
+    const { nativeEvent } = evt;
+    if (nativeEvent.velocityX > 0) {
+      setIsLogin(false);
+    } else {
+      setIsLogin(true);
+    }
+  };
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <TouchableOpacity
-          style={{
-            padding: spacing.small,
-            alignItems: "center",
-            justifyContent: "center",
-            flex: 1,
-          }}
-          onPress={() => setIsLogin(false)}
-        >
-          <Text
-            style={[
-              textStyles.body,
-              { color: !isLogin ? colors.primary : colors.textLight },
-            ]}
+    <PanGestureHandler onGestureEvent={handleGesture}>
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <TouchableOpacity
+            style={{
+              padding: spacing.small,
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+            }}
+            onPress={() => setIsLogin(false)}
           >
-            Sign Up
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                textStyles.body,
+                { color: !isLogin ? colors.primary : colors.textLight },
+              ]}
+            >
+              Sign Up
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => setIsLogin(true)}
+          <TouchableOpacity
+            onPress={() => setIsLogin(true)}
+            style={{
+              padding: spacing.small,
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+            }}
+          >
+            <Text
+              style={[
+                textStyles.body,
+                { color: isLogin ? colors.primary : colors.textLight },
+              ]}
+            >
+              Login
+            </Text>
+          </TouchableOpacity>
+          <Animated.View
+            style={[
+              {
+                height: 2,
+                width: Dimensions.get("screen").width / 2,
+                backgroundColor: colors.primary,
+                position: "absolute",
+                bottom: 0,
+              },
+              animatedStyles,
+            ]}
+          />
+        </View>
+        <View
           style={{
-            padding: spacing.small,
-            alignItems: "center",
-            justifyContent: "center",
+            backgroundColor: colors.cardLight,
             flex: 1,
+            paddingHorizontal: spacing.large,
+            paddingVertical: spacing.medium,
           }}
         >
-          <Text
-            style={[
-              textStyles.body,
-              { color: isLogin ? colors.primary : colors.textLight },
-            ]}
-          >
-            Login
-          </Text>
-        </TouchableOpacity>
-        <Animated.View
-          style={[
-            {
-              height: 2,
-              width: Dimensions.get("screen").width / 2,
-              backgroundColor: colors.primary,
-              position: "absolute",
-              bottom: 0,
-            },
-            animatedStyles,
-          ]}
-        />
+          {!isLogin ? <SignUpForm /> : <LoginForm />}
+        </View>
       </View>
-      <View
-        style={{
-          backgroundColor: colors.cardLight,
-          flex: 1,
-          paddingHorizontal: spacing.large,
-          paddingVertical: spacing.medium,
-        }}
-      >
-        {!isLogin ? <SignUpForm /> : <LoginForm />}
-      </View>
-    </View>
+    </PanGestureHandler>
   );
 };
 

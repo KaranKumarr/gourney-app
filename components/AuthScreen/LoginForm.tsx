@@ -11,12 +11,17 @@ import GoogleIcon from "@/assets/google.svg";
 import FacebookIcon from "@/assets/facebook.svg";
 import AppleIcon from "@/assets/apple.svg";
 import { Eye, EyeClosed } from "lucide-react-native";
+import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
 
 const LoginForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
 
   return (
-    <View style={{ flex: 1, justifyContent: "space-between" }}>
+    <Animated.View
+      entering={FadeInRight.duration(150).delay(150)}
+      exiting={FadeOutRight.duration(150)}
+      style={{ flex: 1, justifyContent: "space-between" }}
+    >
       <View style={{ gap: spacing.small }}>
         <Text style={[textStyles.subheading]}>Hello Again</Text>
         <Text
@@ -126,7 +131,7 @@ const LoginForm = () => {
           <FacebookIcon width={32} height={32} />
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
