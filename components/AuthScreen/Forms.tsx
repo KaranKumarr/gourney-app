@@ -10,7 +10,7 @@ import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 
 const Forms = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
 
   const leftPos = useSharedValue<number>(0);
 
@@ -19,7 +19,7 @@ const Forms = () => {
   }));
 
   useEffect(() => {
-    if (!isLogin) {
+    if (isLogin) {
       leftPos.value += Dimensions.get("screen").width / 2;
     } else {
       leftPos.value = 0;
@@ -36,20 +36,20 @@ const Forms = () => {
             justifyContent: "center",
             flex: 1,
           }}
-          onPress={() => setIsLogin(true)}
+          onPress={() => setIsLogin(false)}
         >
           <Text
             style={[
               textStyles.body,
-              { color: isLogin ? colors.primary : colors.textLight },
+              { color: !isLogin ? colors.primary : colors.textLight },
             ]}
           >
-            Login
+            Sign Up
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => setIsLogin(false)}
+          onPress={() => setIsLogin(true)}
           style={{
             padding: spacing.small,
             alignItems: "center",
@@ -60,10 +60,10 @@ const Forms = () => {
           <Text
             style={[
               textStyles.body,
-              { color: !isLogin ? colors.primary : colors.textLight },
+              { color: isLogin ? colors.primary : colors.textLight },
             ]}
           >
-            Sign Up
+            Login
           </Text>
         </TouchableOpacity>
         <Animated.View
@@ -87,7 +87,7 @@ const Forms = () => {
           paddingVertical: spacing.medium,
         }}
       >
-        {isLogin ? <LoginForm /> : <SignUpForm />}
+        {!isLogin ? <SignUpForm /> : <LoginForm />}
       </View>
     </View>
   );
