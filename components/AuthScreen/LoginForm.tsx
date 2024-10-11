@@ -10,6 +10,7 @@ import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
 import GoogleIcon from "@/assets/google.svg";
 import FacebookIcon from "@/assets/facebook.svg";
 import AppleIcon from "@/assets/apple.svg";
+import { Eye, EyeClosed } from "lucide-react-native";
 
 const LoginForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
@@ -35,12 +36,20 @@ const LoginForm = () => {
           placeholder="johndoe@mail.com"
           placeholderTextColor={"rgba(0,0,0,0.33)"}
         />
-        <View style={[defaultStyling.defaultInput]}>
+        <View style={[defaultStyling.defaultInput, { flexDirection: "row" }]}>
           <TextInput
-            placeholder="***********"
+            placeholder="Password"
             placeholderTextColor={"rgba(0,0,0,0.33)"}
             secureTextEntry={passwordHidden}
+            style={{ flex: 1 }}
           />
+          <TouchableOpacity onPress={() => setPasswordHidden(!passwordHidden)}>
+            {passwordHidden ? (
+              <EyeClosed height={24} width={24} color={colors.neutralLight} />
+            ) : (
+              <Eye height={24} width={24} color={colors.neutralLight} />
+            )}
+          </TouchableOpacity>
         </View>
         <TouchableOpacity>
           <Text
@@ -122,5 +131,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-const styles = StyleSheet.create({});
