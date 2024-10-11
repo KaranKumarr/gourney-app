@@ -30,27 +30,17 @@ const LoginForm = () => {
         </Text>
       </View>
       <View style={{ gap: spacing.medium }}>
-        <View style={{ gap: spacing.small }}>
-          <Text style={[textStyles.body, { color: colors.textLight }]}>
-            Your email address
-          </Text>
+        <TextInput
+          style={[defaultStyling.defaultInput]}
+          placeholder="johndoe@mail.com"
+          placeholderTextColor={"rgba(0,0,0,0.33)"}
+        />
+        <View style={[defaultStyling.defaultInput]}>
           <TextInput
-            style={[defaultStyling.defaultInput]}
-            placeholder="johndoe@mail.com"
+            placeholder="***********"
             placeholderTextColor={"rgba(0,0,0,0.33)"}
+            secureTextEntry={passwordHidden}
           />
-        </View>
-        <View style={{ gap: spacing.small }}>
-          <Text style={[textStyles.body, { color: colors.textLight }]}>
-            Your password
-          </Text>
-          <View style={[defaultStyling.defaultInput]}>
-            <TextInput
-              placeholder="***********"
-              placeholderTextColor={"rgba(0,0,0,0.33)"}
-              secureTextEntry={passwordHidden}
-            />
-          </View>
         </View>
         <TouchableOpacity>
           <Text
@@ -90,6 +80,7 @@ const LoginForm = () => {
           flexDirection: "row",
           justifyContent: "center",
           gap: spacing.medium,
+          paddingBottom: spacing.small,
         }}
       >
         <TouchableOpacity
