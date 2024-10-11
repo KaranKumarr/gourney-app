@@ -9,7 +9,7 @@ const Header = () => {
       style={{
         gap: spacing.medium,
         paddingHorizontal: spacing.medium,
-        paddingVertical: spacing.extraLarge,
+        paddingVertical: spacing.large,
       }}
     >
       <View

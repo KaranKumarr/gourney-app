@@ -79,12 +79,12 @@ const Forms = () => {
           ]}
         />
       </View>
-
       <View
         style={{
           backgroundColor: colors.cardLight,
           flex: 1,
-          padding: spacing.large,
+          paddingHorizontal: spacing.large,
+          paddingVertical: spacing.medium,
         }}
       >
         {isLogin ? <LoginForm /> : <SignUpForm />}
