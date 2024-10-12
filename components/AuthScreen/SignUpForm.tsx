@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { spacing, textStyles, defaultStyling, colors } from "@/constants/theme";
 import GoogleIcon from "@/assets/google.svg";
@@ -12,9 +6,46 @@ import FacebookIcon from "@/assets/facebook.svg";
 import AppleIcon from "@/assets/apple.svg";
 import { Eye, EyeClosed } from "lucide-react-native";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
+import { showMessage } from "react-native-flash-message";
+import { validateEmail, validatePassword } from "@/constants/validate";
 
 const SignUpForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = () => {
+    if (!name || !email || !password) {
+      showMessage({
+        message: "All fields are required!",
+        description: "Please fill out the name, email, and password.",
+        type: "danger", // Use 'danger' for error message
+      });
+      return;
+    }
+
+    if (validateEmail(email) === false) {
+      showMessage({
+        message: "Invalid Email",
+        description:
+          "Oops! That doesn’t look like a valid email. Double-check the format.",
+        type: "danger", // Use 'danger' for error message
+      });
+      return;
+    }
+
+    if (validatePassword(password) === false) {
+      showMessage({
+        message: "Invalid Password",
+        description:
+          "Password must be 1-6 characters long with at least one uppercase letter and one digit.",
+        type: "danger", // Use 'danger' for error message
+      });
+      return;
+    }
+  };
 
   return (
     <Animated.View
@@ -37,18 +68,24 @@ const SignUpForm = () => {
       </View>
       <View style={{ gap: spacing.medium }}>
         <TextInput
+          value={name}
+          onChangeText={(text) => setName(text)}
           style={[defaultStyling.defaultInput]}
           placeholder="Name"
           placeholderTextColor={"rgba(0,0,0,0.33)"}
         />
 
         <TextInput
+          value={email}
+          onChangeText={(text) => setEmail(text)}
           style={[defaultStyling.defaultInput]}
           placeholder="Email"
           placeholderTextColor={"rgba(0,0,0,0.33)"}
         />
         <View style={[defaultStyling.defaultInput, { flexDirection: "row" }]}>
           <TextInput
+            value={password}
+            onChangeText={(text) => setPassword(text)}
             placeholder="Password"
             placeholderTextColor={"rgba(0,0,0,0.33)"}
             secureTextEntry={passwordHidden}
@@ -64,7 +101,10 @@ const SignUpForm = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={[defaultStyling.primaryButton]}>
+      <TouchableOpacity
+        onPress={handleSignUp}
+        style={[defaultStyling.primaryButton]}
+      >
         <Text style={[defaultStyling.primaryButtonText]}>Sign Up</Text>
       </TouchableOpacity>
 
@@ -132,5 +172,3 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
-
-const styles = StyleSheet.create({});

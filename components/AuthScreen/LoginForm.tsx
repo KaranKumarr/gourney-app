@@ -12,9 +12,35 @@ import FacebookIcon from "@/assets/facebook.svg";
 import AppleIcon from "@/assets/apple.svg";
 import { Eye, EyeClosed } from "lucide-react-native";
 import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
+import { validateEmail } from "@/constants/validate";
+import { showMessage } from "react-native-flash-message";
 
 const LoginForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignIn = () => {
+    if (!email || !password) {
+      showMessage({
+        message: "All fields are required!",
+        description: "Please fill out the email and password.",
+        type: "danger", // Use 'danger' for error message
+      });
+      return;
+    }
+
+    if (validateEmail(email) === false) {
+      showMessage({
+        message: "Invalid Email",
+        description:
+          "Oops! That doesn’t look like a valid email. Double-check the format.",
+        type: "danger", // Use 'danger' for error message
+      });
+      return;
+    }
+  };
 
   return (
     <Animated.View
@@ -37,12 +63,16 @@ const LoginForm = () => {
       </View>
       <View style={{ gap: spacing.medium }}>
         <TextInput
+          value={email}
+          onChangeText={(text) => setEmail(text)}
           style={[defaultStyling.defaultInput]}
-          placeholder="johndoe@mail.com"
+          placeholder="Email"
           placeholderTextColor={"rgba(0,0,0,0.33)"}
         />
         <View style={[defaultStyling.defaultInput, { flexDirection: "row" }]}>
           <TextInput
+            value={password}
+            onChangeText={(text) => setPassword(text)}
             placeholder="Password"
             placeholderTextColor={"rgba(0,0,0,0.33)"}
             secureTextEntry={passwordHidden}
@@ -68,7 +98,10 @@ const LoginForm = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={[defaultStyling.primaryButton]}>
+      <TouchableOpacity
+        onPress={handleSignIn}
+        style={[defaultStyling.primaryButton]}
+      >
         <Text style={[defaultStyling.primaryButtonText]}>Login</Text>
       </TouchableOpacity>
 
