@@ -8,6 +8,9 @@ import { Eye, EyeClosed } from "lucide-react-native";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 import { showMessage } from "react-native-flash-message";
 import { validateEmail, validatePassword } from "@/constants/validate";
+// import { router } from "expo-router";
+
+const API_URL = `${process.env.EXPO_PUBLIC_GOURNEY_API_URL}auth/register`;
 
 const SignUpForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
@@ -16,7 +19,7 @@ const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!name || !email || !password) {
       showMessage({
         message: "All fields are required!",
@@ -44,6 +47,41 @@ const SignUpForm = () => {
         type: "danger", // Use 'danger' for error message
       });
       return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          password,
+          name: name.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status !== 201) {
+        showMessage({
+          message: "Oops",
+          description: data.message,
+          type: "danger",
+        });
+        return;
+      }
+
+      // router.replace("/tabs");
+    } catch (error: any) {
+      showMessage({
+        message: "Oops",
+        description: "Something went wrong with server.",
+        type: "danger",
+      });
+      console.log(error);
     }
   };
 
