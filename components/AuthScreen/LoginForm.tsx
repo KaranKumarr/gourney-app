@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   TextInput,
@@ -15,18 +14,20 @@ import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
 import { validateEmail } from "@/constants/validate";
 import { showMessage } from "react-native-flash-message";
 
+const API_URL = `${process.env.EXPO_PUBLIC_GOURNEY_API_URL}auth/login`;
+
 const LoginForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!email || !password) {
       showMessage({
         message: "All fields are required!",
         description: "Please fill out the email and password.",
-        type: "danger", // Use 'danger' for error message
+        type: "danger",
       });
       return;
     }
@@ -35,10 +36,38 @@ const LoginForm = () => {
       showMessage({
         message: "Invalid Email",
         description:
-          "Oops! That doesn’t look like a valid email. Double-check the format.",
-        type: "danger", // Use 'danger' for error message
+          "That doesn’t look like a valid email. Double-check the format.",
+        type: "danger",
       });
       return;
+    }
+    try {
+      const response = await fetch(`${API_URL}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email.toLowerCase(), password }),
+      });
+
+      const data = await response.json();
+
+      if (response.status !== 201) {
+        showMessage({
+          message: "Oops",
+          description: data.message,
+          type: "danger",
+        });
+        return;
+      }
+    } catch (error: any) {
+      showMessage({
+        message: "Oops",
+        description: "Something went wrong with server.",
+        type: "danger",
+      });
+      console.log(error);
     }
   };
 
