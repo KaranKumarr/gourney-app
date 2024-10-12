@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
-import React from "react";
 import { BookHeart } from "lucide-react-native";
 import { spacing, colors, textStyles } from "@/constants/theme";
+import React from "react";
 
 const Header = () => {
   return (

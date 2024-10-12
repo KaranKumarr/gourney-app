@@ -1,33 +1,34 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import Header from "@/components/AuthScreen/Header";
-import Forms from "@/components/AuthScreen/Forms";
-import { colors } from "@/constants/theme";
-import { ScrollView, StatusBar } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
+import { router } from "expo-router";
+import { Text, View } from "react-native";
+import { colors, textStyles } from "@/constants/theme";
 
 export default function Index() {
+  useEffect(() => {
+    const fetchToken = async () => {
+      const access_token = await AsyncStorage.getItem("access_token");
+      if (access_token) {
+        router.replace("/tabs/");
+      } else {
+        router.replace("/auth");
+      }
+    };
+    fetchToken();
+  }, []);
+
   return (
-    <GestureHandlerRootView>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          backgroundColor: colors.backgroundLight,
-        }}
-      >
-        <StatusBar barStyle={"dark-content"} />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{
-            flex: 1,
-          }}
-          contentContainerStyle={{
-            flexGrow: 1,
-          }}
-        >
-          <Header />
-          <Forms />
-        </ScrollView>
-      </SafeAreaView>
-    </GestureHandlerRootView>
+    <View
+      style={{
+        backgroundColor: colors.primary,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text style={{ ...textStyles.heading, color: colors.backgroundLight }}>
+        Loading...
+      </Text>
+    </View>
   );
 }

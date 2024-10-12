@@ -6,7 +6,7 @@ import {
   Roboto_400Regular,
 } from "@expo-google-fonts/roboto";
 import FlashMessage from "react-native-flash-message";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function RootLayout() {
   let [fontsLoaded] = useFonts({
@@ -24,6 +24,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="tabs" />
+        <Stack.Screen name="auth" />
       </Stack>
       <FlashMessage position="bottom" />
     </>

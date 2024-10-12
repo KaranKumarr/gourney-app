@@ -9,6 +9,7 @@ import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
 import { validateEmail } from "@/constants/validate";
 import { showMessage } from "react-native-flash-message";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_URL = `${process.env.EXPO_PUBLIC_GOURNEY_API_URL}auth/login`;
 
@@ -58,7 +59,9 @@ const LoginForm = () => {
         return;
       }
 
-      router.replace("/tabs");
+      AsyncStorage.setItem("access_token", data.access_token);
+
+      router.push("/tabs");
     } catch (error: any) {
       showMessage({
         message: "Oops",
@@ -90,6 +93,7 @@ const LoginForm = () => {
       </View>
       <View style={{ gap: spacing.medium }}>
         <TextInput
+          autoComplete="email"
           value={email}
           onChangeText={(text) => setEmail(text)}
           style={[defaultStyling.defaultInput]}

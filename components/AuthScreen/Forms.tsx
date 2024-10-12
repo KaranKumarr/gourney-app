@@ -13,6 +13,7 @@ import {
   PanGestureHandler,
   PanGestureHandlerEventPayload,
 } from "react-native-gesture-handler";
+import React from "react";
 
 const Forms = () => {
   const [isLogin, setIsLogin] = useState(false);
