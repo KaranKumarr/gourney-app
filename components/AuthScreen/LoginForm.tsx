@@ -1,9 +1,4 @@
-import {
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
 import GoogleIcon from "@/assets/google.svg";
@@ -13,6 +8,7 @@ import { Eye, EyeClosed } from "lucide-react-native";
 import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
 import { validateEmail } from "@/constants/validate";
 import { showMessage } from "react-native-flash-message";
+import { router } from "expo-router";
 
 const API_URL = `${process.env.EXPO_PUBLIC_GOURNEY_API_URL}auth/login`;
 
@@ -61,6 +57,8 @@ const LoginForm = () => {
         });
         return;
       }
+
+      router.replace("/tabs");
     } catch (error: any) {
       showMessage({
         message: "Oops",
