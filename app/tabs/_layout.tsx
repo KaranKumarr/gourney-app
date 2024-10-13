@@ -1,4 +1,3 @@
-import TopBar from "@/components/core/TopBar";
 import { colors, spacing, textStyles } from "@/constants/theme";
 import { Tabs } from "expo-router";
 import {
@@ -13,7 +12,7 @@ function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        header: () => <TopBar />,
+        headerShown: false,
       }}
     >
       <Tabs.Screen
