@@ -6,7 +6,8 @@ import {
   Roboto_400Regular,
 } from "@expo-google-fonts/roboto";
 import FlashMessage from "react-native-flash-message";
-import React, { useEffect } from "react";
+import React from "react";
+import { StatusBar } from "react-native";
 
 export default function RootLayout() {
   let [fontsLoaded] = useFonts({
@@ -19,9 +20,12 @@ export default function RootLayout() {
     return null;
   }
 
+  StatusBar.setBarStyle("dark-content");
+
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
+        
         <Stack.Screen name="index" />
         <Stack.Screen name="tabs" />
         <Stack.Screen name="auth" />

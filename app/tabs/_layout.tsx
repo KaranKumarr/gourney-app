@@ -1,3 +1,4 @@
+import TopBar from "@/components/core/TopBar";
 import { colors, spacing, textStyles } from "@/constants/theme";
 import { Tabs } from "expo-router";
 import {
@@ -7,9 +8,14 @@ import {
   ChartColumn,
 } from "lucide-react-native";
 import { Text } from "react-native";
+
 function TabsLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        header: () => <TopBar />,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
