@@ -3,12 +3,16 @@ import { useEffect } from "react";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
 import { colors, textStyles } from "@/constants/theme";
+import useJournalEntriesStore from "@/state/useJournalEntriesStore";
 
 export default function Index() {
+  const { fetchEntries } = useJournalEntriesStore();
+
   useEffect(() => {
     const fetchToken = async () => {
       const access_token = await AsyncStorage.getItem("access_token");
       if (access_token) {
+        await fetchEntries(access_token);
         router.replace("/tabs/");
       } else {
         router.replace("/auth");
