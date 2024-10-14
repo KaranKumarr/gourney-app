@@ -33,16 +33,22 @@ export const textStyles = StyleSheet.create({
     fontFamily: "Roboto_500Medium",
     color: colors.textLight,
   },
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
+    lineHeight: 22,
+    fontFamily: "Roboto_500Medium",
+    color: colors.textLight,
+  },
   body: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "400",
     lineHeight: 22,
     fontFamily: "Roboto_400Regular",
     color: colors.textLight,
   },
-
   smallText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "400",
     lineHeight: 20,
     fontFamily: "Roboto_400Regular",

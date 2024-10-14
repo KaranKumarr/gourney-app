@@ -24,7 +24,7 @@ interface JournalEntry {
 }
 
 type JournalEntryStore = {
-  items: JournalEntry[];
+  journalEntries: JournalEntry[];
   fetchEntries: (token: string) => void;
   addEntry: (entry: JournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
@@ -32,9 +32,9 @@ type JournalEntryStore = {
 };
 
 const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
-  items: [], // Initial state
+  journalEntries: [], // Initial state
 
-  // Action to fetch items from an API
+  // Action to fetch journalEntries from an API
   fetchEntries: async (token) => {
     try {
       console.log(`${BASE_URL}journal`);
@@ -42,35 +42,37 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }); // Fetching items
+      }); // Fetching journalEntries
 
       const data: JournalEntry[] = response.data;
       console.log(data);
-      set({ items: data });
+      set({ journalEntries: data });
     } catch (error) {
-      console.error("Failed to fetch items:", error);
+      console.error("Failed to fetch journalEntries:", error);
     }
   },
 
   // Action to add an item
   addEntry: (item: JournalEntry) =>
-    set((state: { items: JournalEntry[] }) => ({
-      items: [...state.items, item],
+    set((state: { journalEntries: JournalEntry[] }) => ({
+      journalEntries: [...state.journalEntries, item],
     })),
 
   // Action to remove an item
   removeEntry: (id: number) =>
-    set((state: { items: JournalEntry[] }) => ({
-      items: state.items.filter((item: { id: number }) => item.id !== id),
+    set((state: { journalEntries: JournalEntry[] }) => ({
+      journalEntries: state.journalEntries.filter(
+        (item: { id: number }) => item.id !== id
+      ),
     })),
 
-  // Action to get the count of items
-  //   getItemCount: () => get().items.length,
+  // Action to get the count of journalEntries
+  //   getItemCount: () => get().journalEntries.length,
 
   //  Update an item by id
   updateEntry: (id: any, updatedItem: any) =>
-    set((state: { items: any[] }) => ({
-      items: state.items.map((item: { id: any }) =>
+    set((state: { journalEntries: any[] }) => ({
+      journalEntries: state.journalEntries.map((item: { id: any }) =>
         item.id === id ? updatedItem : item
       ),
     })),

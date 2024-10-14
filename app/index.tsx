@@ -10,9 +10,9 @@ export default function Index() {
 
   useEffect(() => {
     const fetchToken = async () => {
-      const access_token = await AsyncStorage.getItem("access_token");
-      if (access_token) {
-        await fetchEntries(access_token);
+      const token = await AsyncStorage.getItem("access_token");
+      if (token) {
+        await fetchEntries(token);
         router.replace("/tabs/");
       } else {
         router.replace("/auth");
