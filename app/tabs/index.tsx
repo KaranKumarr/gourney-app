@@ -22,7 +22,10 @@ const Home = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
-      <ScrollView style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
+      <ScrollView
+        nestedScrollEnabled
+        style={{ flex: 1, backgroundColor: colors.backgroundLight }}
+      >
         <TopBar />
         <View
           style={{
@@ -94,6 +97,8 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <FlatList
+            nestedScrollEnabled={true}
+            scrollEnabled={false}
             data={journalEntries}
             renderItem={(entry) => {
               return (
