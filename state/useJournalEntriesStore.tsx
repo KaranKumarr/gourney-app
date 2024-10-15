@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import axios from "axios";
+import { ApiClient } from "@/constants/api";
 
 const BASE_URL = process.env.EXPO_PUBLIC_GOURNEY_API_URL;
+const apiPath = ApiClient();
 
 export enum MoodType {
   Happy = "Happy",
@@ -33,20 +35,20 @@ type JournalEntryStore = {
 
 const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   journalEntries: [], // Initial state
-
   // Action to fetch journalEntries from an API
   fetchEntries: async (token) => {
     try {
-      console.log(`${BASE_URL}journal`);
-      const response = await axios.get(`${BASE_URL}journal`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }); // Fetching journalEntries
-
-      const data: JournalEntry[] = response.data;
-      console.log(data);
-      set({ journalEntries: data });
+      apiPath
+        .get("journal", null)
+        .then((response) => {
+          const data: JournalEntry[] = response.data;
+          set({ journalEntries: data });
+        })
+        .catch((error) => {
+          // Handle errors, including token-related errors
+          console.error("API Error:", error);
+          console.error("API Error:", error.message);
+        });
     } catch (error) {
       console.error("Failed to fetch journalEntries:", error);
     }

@@ -58,8 +58,8 @@ const LoginForm = () => {
         });
         return;
       }
-
-      AsyncStorage.setItem("access_token", data.access_token);
+      AsyncStorage.setItem("accessToken", "Bearer " + data.accessToken);
+      AsyncStorage.setItem("refreshToken", data.refreshToken);
 
       router.push("/tabs");
     } catch (error: any) {

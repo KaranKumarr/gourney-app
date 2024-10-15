@@ -10,7 +10,7 @@ export default function Index() {
 
   useEffect(() => {
     const fetchToken = async () => {
-      const token = await AsyncStorage.getItem("access_token");
+      const token = await AsyncStorage.getItem("accessToken");
       if (token) {
         await fetchEntries(token);
         router.replace("/tabs/");
