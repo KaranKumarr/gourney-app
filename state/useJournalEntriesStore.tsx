@@ -27,7 +27,7 @@ interface JournalEntry {
 
 type JournalEntryStore = {
   journalEntries: JournalEntry[];
-  fetchEntries: (token: string) => void;
+  fetchEntries: () => void;
   addEntry: (entry: JournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
   removeEntry: (id: number) => void;
@@ -36,7 +36,7 @@ type JournalEntryStore = {
 const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   journalEntries: [], // Initial state
   // Action to fetch journalEntries from an API
-  fetchEntries: async (token) => {
+  fetchEntries: async () => {
     try {
       apiPath
         .get("journal", null)

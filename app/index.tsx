@@ -4,15 +4,18 @@ import { router } from "expo-router";
 import { Text, View } from "react-native";
 import { colors, textStyles } from "@/constants/theme";
 import useJournalEntriesStore from "@/state/useJournalEntriesStore";
+import useUserStore from "@/state/useUserStore";
 
 export default function Index() {
   const { fetchEntries } = useJournalEntriesStore();
+  const { fetchProfile } = useUserStore();
 
   useEffect(() => {
     const fetchToken = async () => {
-      const token = await AsyncStorage.getItem("accessToken");
+      const token = await AsyncStorage.getItem("refreshToken");
       if (token) {
-        await fetchEntries(token);
+        await fetchEntries();
+        await fetchProfile();
         router.replace("/tabs/");
       } else {
         router.replace("/auth");

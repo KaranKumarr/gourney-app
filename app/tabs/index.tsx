@@ -16,9 +16,11 @@ import CalmEmoji from "@/assets/emoji-calm.svg";
 import AngryEmoji from "@/assets/emoji-angry.svg";
 import dayjs from "dayjs";
 import { Plus } from "lucide-react-native";
+import useUserStore from "@/state/useUserStore";
 
 const Home = () => {
   const { journalEntries } = useJournalEntriesStore();
+  const { user } = useUserStore();
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
@@ -39,7 +41,7 @@ const Home = () => {
             >
               Good Morning!
             </Text>
-            <Text style={[textStyles.heading]}>Karchna</Text>
+            <Text style={[textStyles.heading]}>{user.name}</Text>
           </View>
           <View
             style={{
