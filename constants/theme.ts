@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const colors = {
   primary: "#41D3BD",
+  secondary: "#a696f6",
   backgroundLight: "#fff",
   backgroundDark: "#18181B",
   textLight: "#18181B",
@@ -9,6 +10,7 @@ export const colors = {
   cardDark: "#2F2F31",
   cardLight: "#f2f2f2",
   neutralLight: "#18181B7B",
+  error: "#D81919FF",
 };
 
 export const spacing = {

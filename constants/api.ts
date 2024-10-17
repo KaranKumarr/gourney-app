@@ -31,7 +31,7 @@ export const ApiClient = () => {
   function createAxiosResponseInterceptor() {
     const interceptor = api.interceptors.response.use(
       (response) => {
-        console.log("RETURN REPONSE INSTEAD ERRRO");
+        console.log(`Data fetched`);
         return response;
       },
       async (error) => {
@@ -47,7 +47,7 @@ export const ApiClient = () => {
             api.interceptors.response.eject(interceptor);
 
             const refreshToken = await AsyncStorage.getItem("refreshToken");
-            console.error(
+            console.log(
               "Error at API AXIOS",
               error.response.status,
               refreshToken

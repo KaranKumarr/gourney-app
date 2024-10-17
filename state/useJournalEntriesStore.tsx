@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import axios from "axios";
 import { ApiClient } from "@/constants/api";
 
 const BASE_URL = process.env.EXPO_PUBLIC_GOURNEY_API_URL;
@@ -13,7 +12,7 @@ export enum MoodType {
   Calm = "Calm",
 }
 
-interface JournalEntry {
+export interface JournalEntry {
   id: number;
   userId: number;
   title: string;
@@ -28,6 +27,7 @@ interface JournalEntry {
 type JournalEntryStore = {
   journalEntries: JournalEntry[];
   fetchEntries: () => void;
+  fetchEntryById: (id: number) => any;
   addEntry: (entry: JournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
   removeEntry: (id: number) => void;
@@ -42,6 +42,7 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
         .get("journal", null)
         .then((response) => {
           const data: JournalEntry[] = response.data;
+          console.log(data);
           set({ journalEntries: data });
         })
         .catch((error) => {
@@ -52,6 +53,10 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
     } catch (error) {
       console.error("Failed to fetch journalEntries:", error);
     }
+  },
+
+  fetchEntryById: async (id: number) => {
+    return get().journalEntries.find((item) => item.id === id);
   },
 
   // Action to add an item

@@ -17,6 +17,7 @@ import AngryEmoji from "@/assets/emoji-angry.svg";
 import dayjs from "dayjs";
 import { Plus } from "lucide-react-native";
 import useUserStore from "@/state/useUserStore";
+import { router } from "expo-router";
 
 const Home = () => {
   const { journalEntries } = useJournalEntriesStore();
@@ -104,7 +105,10 @@ const Home = () => {
             data={journalEntries}
             renderItem={(entry) => {
               return (
-                <View
+                <TouchableOpacity
+                  onPress={() => {
+                    router.push(`journal/${entry.item.id}`);
+                  }}
                   style={{
                     borderWidth: 0.5,
                     borderColor: colors.neutralLight,
@@ -135,7 +139,7 @@ const Home = () => {
                   >
                     {entry.item.body.trim()}
                   </Text>
-                </View>
+                </TouchableOpacity>
               );
             }}
             keyExtractor={(entry) => entry.id.toString()}
