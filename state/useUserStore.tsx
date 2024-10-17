@@ -29,6 +29,7 @@ const useUserStore = create<UserStore>((set, get) => ({
       .then((response) => {
         const data: User = response.data;
         AsyncStorage.setItem("user", JSON.stringify(data));
+        console.log("backend");
         console.log(data);
         set({ user: data });
       })
@@ -37,6 +38,8 @@ const useUserStore = create<UserStore>((set, get) => ({
         console.error("API Error:", error);
         console.error("API Error:", error.message);
         const user = await AsyncStorage.getItem("user");
+        console.log("AsyncStorage");
+        console.log(user);
         if (user) set({ user: JSON.parse(user) });
       });
   },

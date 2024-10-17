@@ -37,22 +37,18 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   journalEntries: [], // Initial state
   // Action to fetch journalEntries from an API
   fetchEntries: async () => {
-    try {
-      apiPath
-        .get("journal", null)
-        .then((response) => {
-          const data: JournalEntry[] = response.data;
-          console.log(data);
-          set({ journalEntries: data });
-        })
-        .catch((error) => {
-          // Handle errors, including token-related errors
-          console.error("API Error:", error);
-          console.error("API Error:", error.message);
-        });
-    } catch (error) {
-      console.error("Failed to fetch journalEntries:", error);
-    }
+    apiPath
+      .get("journal", null)
+      .then((response) => {
+        const data: JournalEntry[] = response.data;
+        console.log(data);
+        set({ journalEntries: data });
+      })
+      .catch((error) => {
+        // Handle errors, including token-related errors
+        console.error("API Error:", error);
+        console.error("API Error:", error.message);
+      });
   },
 
   fetchEntryById: async (id: number) => {

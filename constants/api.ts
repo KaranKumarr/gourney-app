@@ -36,11 +36,11 @@ export const ApiClient = () => {
       },
       async (error) => {
         // Reject promise if usual error
-        if (error.response.status !== 401) {
+        if (error.response?.status !== 401) {
           return Promise.reject(error);
         }
         if (
-          error.response.status === 401 &&
+          error.response?.status === 401 &&
           (await AsyncStorage.getItem("refreshToken"))
         ) {
           try {
@@ -49,7 +49,7 @@ export const ApiClient = () => {
             const refreshToken = await AsyncStorage.getItem("refreshToken");
             console.log(
               "Error at API AXIOS",
-              error.response.status,
+              error.response?.status,
               refreshToken
             );
 
@@ -76,7 +76,7 @@ export const ApiClient = () => {
             return axios(error.response.config);
           } catch (err: any) {
             //If refresh token is invalid, you will receive this error status and log user out
-            if (err.response.status === 400) {
+            if (err.response?.status === 400) {
               throw { response: { status: 401 } };
             }
             return Promise.reject(err);
