@@ -6,16 +6,21 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import useJournalEntriesStore, {
   JournalEntry,
 } from "@/state/useJournalEntriesStore";
-import { ChevronLeft, SmilePlus, Tags, X } from "lucide-react-native";
-import { colors, spacing, textStyles } from "@/constants/theme";
+import { ChevronLeft, SmilePlus, Tags, Check } from "lucide-react-native";
+import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import dayjs from "dayjs";
-import { RichText, Toolbar, useEditorBridge } from "@10play/tentap-editor";
+import {
+  RichText,
+  Toolbar,
+  ToolbarItems,
+  useEditorBridge,
+} from "@10play/tentap-editor";
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
@@ -23,20 +28,38 @@ const Journal = () => {
 
   const [entry, setEntry] = useState<JournalEntry | null>(null);
 
+  const titleRef = useRef<{
+    inputValue: string;
+  }>({
+    inputValue: "",
+  });
+
+  const bodyRef = useRef<{
+    inputValue: string;
+  }>({
+    inputValue: entry?.body ?? "",
+  });
+
   useEffect(() => {
     const fetchData = async () => {
-      const temp = await fetchEntryById(+id);
+      const temp: JournalEntry = await fetchEntryById(+id);
       setEntry(temp);
+      titleRef.current.inputValue = temp.title;
+      bodyRef.current.inputValue = temp.body;
     };
     fetchData();
   }, [id]);
 
   const editor = useEditorBridge({
-    autofocus: true,
     avoidIosKeyboard: true,
     initialContent: entry?.body ?? "",
-    editable: true,
   });
+
+  const submit = async () => {
+    const title = titleRef.current.inputValue;
+    const body = await editor.getHTML();
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -50,14 +73,25 @@ const Journal = () => {
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginBottom: spacing.small,
+          alignItems: "center",
+          marginBottom: spacing.medium,
+          paddingTop: spacing.small / 2,
         }}
       >
         <TouchableOpacity>
-          <ChevronLeft height={28} width={28} color={colors.neutralLight} />
+          <ChevronLeft height={32} width={32} color={colors.neutralLight} />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <X height={28} width={28} color={colors.neutralLight} />
+        <TouchableOpacity
+          style={[
+            defaultStyling.primaryButton,
+            {
+              paddingVertical: spacing.small,
+              flexDirection: "row",
+            },
+          ]}
+          onPress={submit}
+        >
+          <Text style={[defaultStyling.primaryButtonText]}>Done</Text>
         </TouchableOpacity>
       </View>
 
@@ -133,6 +167,9 @@ const Journal = () => {
         }}
       >
         <TextInput
+          onChange={(event) => {
+            titleRef.current.inputValue = event.nativeEvent.text;
+          }}
           defaultValue={entry?.title}
           style={[textStyles.heading]}
           placeholder="Add a title to this entry."
