@@ -1,16 +1,24 @@
-import { View, Text, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  Dimensions,
+} from "react-native";
 import React from "react";
 import { EditorBridge, RichText, Toolbar } from "@10play/tentap-editor";
+import { spacing } from "@/constants/theme";
 
 const BodySetter = ({ editor }: { editor: EditorBridge }) => {
   return (
-    <View style={{ flex: 1, position: "relative" }}>
+    <View style={{ flex: 1, paddingHorizontal: spacing.medium }}>
       <RichText editor={editor} />
       <KeyboardAvoidingView
         style={{
           position: "absolute",
-          width: "100%",
           bottom: 0,
+          left: 0,
+          width: Dimensions.get("screen").width,
         }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >

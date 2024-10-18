@@ -10,6 +10,7 @@ const Toolbox = () => {
         flexDirection: "row",
         marginBottom: spacing.medium,
         gap: spacing.small,
+        paddingHorizontal: spacing.medium,
       }}
     >
       <TouchableOpacity

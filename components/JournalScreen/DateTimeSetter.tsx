@@ -5,7 +5,13 @@ import dayjs from "dayjs";
 
 const DateTimeSetter = ({ entryDateTime }: { entryDateTime: Date }) => {
   return (
-    <View style={{ flexDirection: "row", marginBottom: spacing.medium }}>
+    <View
+      style={{
+        flexDirection: "row",
+        marginBottom: spacing.medium,
+        paddingHorizontal: spacing.medium,
+      }}
+    >
       <Text style={[textStyles.label, { fontFamily: "Roboto_500Medium" }]}>
         {dayjs(entryDateTime).format("dddd, hh:mm A")}
       </Text>

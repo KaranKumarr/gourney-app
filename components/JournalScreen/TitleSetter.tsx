@@ -22,6 +22,7 @@ const TitleSetter = ({
         borderBottomWidth: 1,
         borderColor: colors.cardLight,
         paddingBottom: spacing.small,
+        paddingHorizontal: spacing.medium,
       }}
     >
       <TextInput

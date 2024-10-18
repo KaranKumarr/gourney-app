@@ -86,7 +86,6 @@ const Journal = () => {
         backgroundColor: colors.backgroundLight,
         flex: 1,
         paddingVertical: spacing.small,
-        paddingHorizontal: spacing.medium,
       }}
     >
       <Header submit={submit} />

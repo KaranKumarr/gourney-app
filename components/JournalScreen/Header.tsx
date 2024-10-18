@@ -13,6 +13,7 @@ const Header = ({ submit }: { submit: () => Promise<void> }) => {
         alignItems: "center",
         marginBottom: spacing.medium,
         paddingTop: spacing.small / 2,
+        paddingHorizontal: spacing.medium,
       }}
     >
       <TouchableOpacity
