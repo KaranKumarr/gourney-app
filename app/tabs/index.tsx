@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import { Plus } from "lucide-react-native";
 import useUserStore from "@/state/useUserStore";
 import { router } from "expo-router";
+import JournalEntryCard from "@/components/core/JournalEntryCard";
 
 const Home = () => {
   const { journalEntries, fetchEntries } = useJournalEntriesStore();
@@ -111,45 +112,7 @@ const Home = () => {
             nestedScrollEnabled={true}
             scrollEnabled={false}
             data={journalEntries}
-            renderItem={(entry) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    router.push(`journal/${entry.item.id}`);
-                  }}
-                  style={{
-                    borderWidth: 0.5,
-                    borderColor: colors.neutralLight,
-                    padding: spacing.medium,
-                    borderRadius: 4,
-                    gap: spacing.small / 2,
-                    marginBottom: spacing.medium,
-                  }}
-                >
-                  <View style={{ flexDirection: "row" }}>
-                    <Text
-                      style={[
-                        textStyles.smallText,
-                        { fontFamily: "Roboto_500Medium" },
-                      ]}
-                    >
-                      {dayjs(entry.item.entryDateTime).format("hh:mm A")}
-                    </Text>
-                    <Text style={[textStyles.smallText]}>
-                      {dayjs(entry.item.entryDateTime).format("  - D MMM YYYY")}
-                    </Text>
-                  </View>
-
-                  <Text style={[textStyles.label]}>{entry.item.title}</Text>
-                  <Text
-                    style={[textStyles.body, { color: colors.neutralLight }]}
-                    numberOfLines={3}
-                  >
-                    {entry.item.body.trim()}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }}
+            renderItem={(entry) => <JournalEntryCard entry={entry.item} />}
             keyExtractor={(entry) => entry.id.toString()}
             refreshControl={
               <RefreshControl
