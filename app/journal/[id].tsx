@@ -7,7 +7,7 @@ import {
   Platform,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import useJournalEntriesStore, {
   JournalEntry,
 } from "@/state/useJournalEntriesStore";
@@ -15,11 +15,7 @@ import { ChevronLeft, SmilePlus, Tags, Check } from "lucide-react-native";
 import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import dayjs from "dayjs";
-import {
-  RichText,
-  Toolbar,
-  useEditorBridge,
-} from "@10play/tentap-editor";
+import { RichText, Toolbar, useEditorBridge } from "@10play/tentap-editor";
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
@@ -89,7 +85,11 @@ const Journal = () => {
           paddingTop: spacing.small / 2,
         }}
       >
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            router.back();
+          }}
+        >
           <ChevronLeft height={32} width={32} color={colors.neutralLight} />
         </TouchableOpacity>
         <TouchableOpacity
