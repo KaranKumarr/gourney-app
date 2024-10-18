@@ -1,28 +1,21 @@
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
   NativeSyntheticEvent,
   TextInputChangeEventData,
+  StatusBar,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 import useJournalEntriesStore, {
   JournalEntry,
 } from "@/state/useJournalEntriesStore";
-import { ChevronLeft, SmilePlus, Tags, Check } from "lucide-react-native";
-import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
-import { SafeAreaView } from "react-native-safe-area-context";
-import dayjs from "dayjs";
-import { RichText, Toolbar, useEditorBridge } from "@10play/tentap-editor";
+import { colors, spacing } from "@/constants/theme";
+import { useEditorBridge } from "@10play/tentap-editor";
 import Header from "@/components/JournalScreen/Header";
 import DateTimeSetter from "@/components/JournalScreen/DateTimeSetter";
 import Toolbox from "@/components/JournalScreen/Toolbox";
 import TitleSetter from "@/components/JournalScreen/TitleSetter";
 import BodySetter from "@/components/JournalScreen/BodySetter";
+import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
@@ -81,11 +74,14 @@ const Journal = () => {
   };
 
   return (
-    <SafeAreaView
+    <Animated.View
+      entering={FadeInRight.duration(150).delay(150)}
+      exiting={FadeOutRight.duration(150)}
       style={{
-        backgroundColor: colors.backgroundLight,
         flex: 1,
         paddingVertical: spacing.small,
+        backgroundColor: colors.backgroundLight,
+        marginTop: StatusBar.currentHeight,
       }}
     >
       <Header submit={submit} />
@@ -104,7 +100,7 @@ const Journal = () => {
       />
 
       <BodySetter editor={editor} />
-    </SafeAreaView>
+    </Animated.View>
   );
 };
 
