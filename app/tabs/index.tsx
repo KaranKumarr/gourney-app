@@ -4,8 +4,9 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  RefreshControl,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { colors, spacing, textStyles } from "@/constants/theme";
 import TopBar from "@/components/core/TopBar";
 import useJournalEntriesStore from "@/state/useJournalEntriesStore";
@@ -20,8 +21,15 @@ import useUserStore from "@/state/useUserStore";
 import { router } from "expo-router";
 
 const Home = () => {
-  const { journalEntries } = useJournalEntriesStore();
+  const { journalEntries, fetchEntries } = useJournalEntriesStore();
   const { user } = useUserStore();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchEntries();
+    setRefreshing(false);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
@@ -143,6 +151,15 @@ const Home = () => {
               );
             }}
             keyExtractor={(entry) => entry.id.toString()}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[colors.primary]}
+                progressBackgroundColor={colors.backgroundLight}
+                style={{ elevation: 2 }}
+              />
+            }
           />
         </View>
       </ScrollView>

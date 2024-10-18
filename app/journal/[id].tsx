@@ -18,7 +18,6 @@ import dayjs from "dayjs";
 import {
   RichText,
   Toolbar,
-  ToolbarItems,
   useEditorBridge,
 } from "@10play/tentap-editor";
 
