@@ -5,6 +5,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -16,6 +18,11 @@ import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import dayjs from "dayjs";
 import { RichText, Toolbar, useEditorBridge } from "@10play/tentap-editor";
+import Header from "@/components/JournalScreen/Header";
+import DateTimeSetter from "@/components/JournalScreen/DateTimeSetter";
+import Toolbox from "@/components/JournalScreen/Toolbox";
+import TitleSetter from "@/components/JournalScreen/TitleSetter";
+import BodySetter from "@/components/JournalScreen/BodySetter";
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
@@ -54,6 +61,12 @@ const Journal = () => {
     initialContent: entry?.body ?? "",
   });
 
+  const onTitleChange = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>
+  ) => {
+    titleRef.current.inputValue = event.nativeEvent.text;
+  };
+
   const submit = async () => {
     if (entry) {
       const title = titleRef.current.inputValue;
@@ -76,130 +89,22 @@ const Journal = () => {
         paddingHorizontal: spacing.medium,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: spacing.medium,
-          paddingTop: spacing.small / 2,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            router.back();
-          }}
-        >
-          <ChevronLeft height={32} width={32} color={colors.neutralLight} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            defaultStyling.primaryButton,
-            {
-              paddingVertical: spacing.small,
-              flexDirection: "row",
-            },
-          ]}
-          onPress={submit}
-        >
-          <Text style={[defaultStyling.primaryButtonText]}>Done</Text>
-        </TouchableOpacity>
-      </View>
+      <Header submit={submit} />
 
-      <View style={{ flexDirection: "row", marginBottom: spacing.medium }}>
-        <Text style={[textStyles.label, { fontFamily: "Roboto_500Medium" }]}>
-          {dayjs(entry?.entryDateTime).format("dddd, hh:mm A")}
-        </Text>
-        <Text style={[textStyles.body]}>
-          {dayjs(entry?.entryDateTime).format("  - D MMM YYYY")}
-        </Text>
-      </View>
+      {entry?.entryDateTime ? (
+        <DateTimeSetter entryDateTime={entry.entryDateTime} />
+      ) : (
+        ""
+      )}
 
-      <View
-        style={{
-          flexDirection: "row",
-          marginBottom: spacing.medium,
-          gap: spacing.small,
-        }}
-      >
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: spacing.small,
-            padding: spacing.small,
-            backgroundColor: colors.secondary,
-            borderRadius: 4,
-          }}
-        >
-          <SmilePlus height={20} width={20} color={colors.backgroundLight} />
-          <Text
-            style={[
-              textStyles.smallText,
-              {
-                color: colors.backgroundLight,
-                textTransform: "uppercase",
-              },
-            ]}
-          >
-            Set Mood
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: spacing.small,
-            padding: spacing.small,
-            backgroundColor: colors.secondary,
-            borderRadius: 4,
-          }}
-        >
-          <Tags height={20} width={20} color={colors.backgroundLight} />
-          <Text
-            style={[
-              textStyles.smallText,
-              {
-                color: colors.backgroundLight,
-                textTransform: "uppercase",
-              },
-            ]}
-          >
-            Add Tags
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Toolbox />
 
-      <View
-        style={{
-          borderBottomWidth: 1,
-          borderColor: colors.cardLight,
-          paddingBottom: spacing.small,
-        }}
-      >
-        <TextInput
-          onChange={(event) => {
-            titleRef.current.inputValue = event.nativeEvent.text;
-          }}
-          defaultValue={entry?.title}
-          style={[textStyles.heading]}
-          placeholder="Add a title to this entry."
-        />
-      </View>
+      <TitleSetter
+        onTitleChange={onTitleChange}
+        defaultValue={entry?.title ?? ""}
+      />
 
-      <View style={{ flex: 1, position: "relative" }}>
-        <RichText editor={editor} />
-        <KeyboardAvoidingView
-          style={{
-            position: "absolute",
-            width: "100%",
-            bottom: 0,
-          }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <Toolbar editor={editor} />
-        </KeyboardAvoidingView>
-      </View>
+      <BodySetter editor={editor} />
     </SafeAreaView>
   );
 };
