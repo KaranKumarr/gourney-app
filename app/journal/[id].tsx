@@ -24,7 +24,7 @@ import {
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
-  const { fetchEntryById } = useJournalEntriesStore();
+  const { fetchEntryById, updateEntry } = useJournalEntriesStore();
 
   const [entry, setEntry] = useState<JournalEntry | null>(null);
 
@@ -42,10 +42,14 @@ const Journal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const temp: JournalEntry = await fetchEntryById(+id);
-      setEntry(temp);
-      titleRef.current.inputValue = temp.title;
-      bodyRef.current.inputValue = temp.body;
+      try {
+        const temp: JournalEntry = await fetchEntryById(+id);
+        setEntry(temp);
+        titleRef.current.inputValue = temp?.title ?? "";
+        bodyRef.current.inputValue = temp?.body ?? "";
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
   }, [id]);
@@ -56,8 +60,16 @@ const Journal = () => {
   });
 
   const submit = async () => {
-    const title = titleRef.current.inputValue;
-    const body = await editor.getHTML();
+    if (entry) {
+      const title = titleRef.current.inputValue;
+      const body = await editor.getHTML();
+
+      await updateEntry(entry.id, {
+        ...entry,
+        title,
+        body,
+      });
+    }
   };
 
   return (

@@ -73,12 +73,26 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   //   getItemCount: () => get().journalEntries.length,
 
   //  Update an item by id
-  updateEntry: (id: any, updatedItem: any) =>
-    set((state: { journalEntries: any[] }) => ({
-      journalEntries: state.journalEntries.map((item: { id: any }) =>
-        item.id === id ? updatedItem : item
-      ),
-    })),
+  updateEntry: (id: any, updatedItem: any) => {
+    apiPath
+      .patch("journal/" + id, updatedItem, undefined)
+      .then((response) => {
+        const data: JournalEntry = response.data;
+        console.log("data");
+        console.log(data);
+        
+        // set((state: { journalEntries: any[] }) => ({
+        //   journalEntries: state.journalEntries.map((item: { id: any }) =>
+        //     item.id === id ? updatedItem : item
+        //   ),
+        // }));
+      })
+      .catch((error) => {
+        // Handle errors, including token-related errors
+        console.error("API Error:", error);
+        console.error("API Error:", error.message);
+      });
+  },
 }));
 
 export default useJournalEntriesStore;
