@@ -41,7 +41,6 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
       .get("journal", null)
       .then((response) => {
         const data: JournalEntry[] = response.data;
-        console.log(data);
         set({ journalEntries: data });
       })
       .catch((error) => {
@@ -80,12 +79,12 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
         const data: JournalEntry = response.data;
         console.log("data");
         console.log(data);
-        
-        // set((state: { journalEntries: any[] }) => ({
-        //   journalEntries: state.journalEntries.map((item: { id: any }) =>
-        //     item.id === id ? updatedItem : item
-        //   ),
-        // }));
+
+        set((state: { journalEntries: any[] }) => ({
+          journalEntries: state.journalEntries.map((item: { id: any }) =>
+            item.id === id ? updatedItem : item
+          ),
+        }));
       })
       .catch((error) => {
         // Handle errors, including token-related errors
