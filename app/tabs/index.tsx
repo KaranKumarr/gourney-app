@@ -127,6 +127,9 @@ const Home = () => {
         </View>
       </ScrollView>
       <TouchableOpacity
+        onPress={() => {
+          router.push("/journal/create");
+        }}
         style={{
           position: "absolute",
           bottom: spacing.large,

@@ -24,6 +24,13 @@ export interface JournalEntry {
   updatedAt: Date;
 }
 
+export interface NewJournalEntry {
+  userId: number;
+  title: string;
+  body: string;
+  entryDateTime: Date;
+}
+
 type JournalEntryStore = {
   journalEntries: JournalEntry[];
   fetchEntries: () => void;

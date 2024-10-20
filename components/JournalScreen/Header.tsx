@@ -4,7 +4,13 @@ import { spacing, colors, defaultStyling } from "@/constants/theme";
 import { router } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 
-const Header = ({ submit }: { submit: () => Promise<void> }) => {
+const Header = ({
+  submit,
+  buttonText,
+}: {
+  submit: () => Promise<void>;
+  buttonText?: string | null;
+}) => {
   return (
     <View
       style={{
@@ -33,7 +39,9 @@ const Header = ({ submit }: { submit: () => Promise<void> }) => {
         ]}
         onPress={submit}
       >
-        <Text style={[defaultStyling.primaryButtonText]}>Done</Text>
+        <Text style={[defaultStyling.primaryButtonText]}>
+          {buttonText ? buttonText : "Done"}
+        </Text>
       </TouchableOpacity>
     </View>
   );
