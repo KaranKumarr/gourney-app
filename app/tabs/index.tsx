@@ -35,6 +35,15 @@ const Home = () => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.backgroundLight }}>
       <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            progressBackgroundColor={colors.backgroundLight}
+            style={{ elevation: 2 }}
+          />
+        }
         nestedScrollEnabled
         style={{ flex: 1, backgroundColor: colors.backgroundLight }}
       >

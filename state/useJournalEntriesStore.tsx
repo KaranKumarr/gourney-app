@@ -67,7 +67,7 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
       .then((response) => {
         const data: JournalEntry = response.data;
         set((state: { journalEntries: JournalEntry[] }) => ({
-          journalEntries: [...state.journalEntries, data],
+          journalEntries: [data, ...state.journalEntries],
         }));
       })
       .catch((error) => {
