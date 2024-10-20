@@ -20,6 +20,11 @@ import { Plus } from "lucide-react-native";
 import useUserStore from "@/state/useUserStore";
 import { router } from "expo-router";
 import JournalEntryCard from "@/components/core/JournalEntryCard";
+import Animated, {
+  FadingTransition,
+  LinearTransition,
+  SequencedTransition,
+} from "react-native-reanimated";
 
 const Home = () => {
   const { journalEntries, fetchEntries } = useJournalEntriesStore();
@@ -117,7 +122,8 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <FlatList
+          <Animated.FlatList
+            itemLayoutAnimation={LinearTransition}
             nestedScrollEnabled={true}
             scrollEnabled={false}
             data={journalEntries}
