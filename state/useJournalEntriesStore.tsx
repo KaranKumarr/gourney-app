@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { ApiClient } from "@/constants/api";
 
-const BASE_URL = process.env.EXPO_PUBLIC_GOURNEY_API_URL;
 const apiPath = ApiClient();
 
 export enum MoodType {
@@ -25,7 +24,6 @@ export interface JournalEntry {
 }
 
 export interface NewJournalEntry {
-  userId: number;
   title: string;
   body: string;
   entryDateTime: Date;
@@ -35,7 +33,7 @@ type JournalEntryStore = {
   journalEntries: JournalEntry[];
   fetchEntries: () => void;
   fetchEntryById: (id: number) => any;
-  addEntry: (entry: JournalEntry) => void;
+  addEntry: (entry: NewJournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
   removeEntry: (id: number) => void;
 };
@@ -62,10 +60,22 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   },
 
   // Action to add an item
-  addEntry: (item: JournalEntry) =>
-    set((state: { journalEntries: JournalEntry[] }) => ({
-      journalEntries: [...state.journalEntries, item],
-    })),
+  addEntry: (item: NewJournalEntry) => {
+    console.log(item);
+    apiPath
+      .post("journal", item, undefined)
+      .then((response) => {
+        const data: JournalEntry = response.data;
+        set((state: { journalEntries: JournalEntry[] }) => ({
+          journalEntries: [...state.journalEntries, data],
+        }));
+      })
+      .catch((error) => {
+        // Handle errors, including token-related errors
+        console.error("API Error:", error);
+        console.error("API Error:", error.message);
+      });
+  },
 
   // Action to remove an item
   removeEntry: (id: number) =>

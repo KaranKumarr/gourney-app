@@ -66,17 +66,19 @@ const CreateJournalEntry = () => {
     console.log(user);
 
     const newEntry: NewJournalEntry = {
-      userId: user.id,
       title,
       body,
       entryDateTime: dayjs().toDate(),
     };
+
+    addEntry(newEntry);
 
     showMessage({
       message: "Created.",
       description: "New journal entry added to your diary.",
       type: "success",
     });
+
     router.back();
   };
 
