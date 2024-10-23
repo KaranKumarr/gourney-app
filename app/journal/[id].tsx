@@ -7,10 +7,8 @@ import {
   TouchableWithoutFeedback,
   TextInput,
   View,
-  ScrollView,
-  FlatList,
 } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import useJournalEntriesStore, {
   JournalEntry,
@@ -26,7 +24,6 @@ import Animated, {
   FadeIn,
   FadeInLeft,
   FadeInRight,
-  FadeOut,
   FadeOutDown,
   FadeOutRight,
 } from "react-native-reanimated";
@@ -36,7 +33,7 @@ import { Tag } from "lucide-react-native";
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
-  const { fetchEntryById, updateEntry } = useJournalEntriesStore();
+  const { fetchEntryById } = useJournalEntriesStore();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [openMoodSheet, setOpenMoodSheet] = useState(false);
@@ -59,7 +56,12 @@ const Journal = () => {
 
   const tagInputRef = useRef<any>();
 
+  const editor = useEditorBridge({
+    initialContent: "",
+  });
+
   useEffect(() => {
+    console.log("ran");
     const fetchData = async () => {
       try {
         const temp: JournalEntry = await fetchEntryById(+id);
@@ -67,12 +69,13 @@ const Journal = () => {
         titleRef.current.inputValue = temp?.title ?? "";
         bodyRef.current.inputValue = temp?.body ?? "";
         setTags(temp?.tags ?? []);
+        if (editor) editor.setContent(temp.body ?? "");
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, editor]);
 
   useEffect(() => {
     if (!openMoodSheet) {
@@ -82,11 +85,6 @@ const Journal = () => {
     }
   }, [openMoodSheet]);
 
-  const editor = useEditorBridge({
-    avoidIosKeyboard: true,
-    initialContent: entry?.body ?? "",
-  });
-
   const onTitleChange = (
     event: NativeSyntheticEvent<TextInputChangeEventData>
   ) => {
@@ -95,19 +93,20 @@ const Journal = () => {
 
   const submit = async () => {
     if (entry) {
-      const title = titleRef.current.inputValue;
+      // const title = titleRef.current.inputValue;
       const body = await editor.getHTML();
-
-      await updateEntry(entry.id, {
-        ...entry,
-        title,
-        body,
-      });
+      console.log(body);
+      // await updateEntry(entry.id, {
+      //   ...entry,
+      //   title,
+      //   body,
+      //   tags,
+      // });
     }
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView>
       <Animated.View
         entering={FadeInRight.duration(150).delay(150)}
         exiting={FadeOutRight.duration(150)}
@@ -116,6 +115,7 @@ const Journal = () => {
           paddingVertical: spacing.small,
           backgroundColor: colors.backgroundLight,
           marginTop: StatusBar.currentHeight,
+          position: "relative",
         }}
       >
         <Header submit={submit} />
