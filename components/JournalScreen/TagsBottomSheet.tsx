@@ -16,20 +16,21 @@ import Animated, {
   FadeInLeft,
 } from "react-native-reanimated";
 
-const TagsBottomSheet = ({
-  tagInputRef,
-  tags,
-  setTags,
-  openTagsSheet,
-  setOpenTagsSheet,
-}: {
-  tagInputRef: React.MutableRefObject<any>;
+interface TagsBottomSheetProps {
   tags: string[];
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
   openTagsSheet: boolean;
   setOpenTagsSheet: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}
+
+const TagsBottomSheet = ({
+  tags,
+  setTags,
+  openTagsSheet,
+  setOpenTagsSheet,
+}: TagsBottomSheetProps) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const tagInputRef = useRef<any>();
 
   useEffect(() => {
     if (!openTagsSheet) {

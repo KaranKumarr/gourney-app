@@ -42,8 +42,6 @@ const Journal = () => {
     inputValue: entry?.body ?? "",
   });
 
-  const tagInputRef = useRef<any>();
-
   const editor = useEditorBridge({
     initialContent: "",
   });
@@ -120,13 +118,14 @@ const Journal = () => {
 
         <BodySetter editor={editor} />
       </Animated.View>
+
       <TagsBottomSheet
         setOpenTagsSheet={setOpenTagsSheet}
         openTagsSheet={openTagsSheet}
         setTags={setTags}
         tags={tags}
-        tagInputRef={tagInputRef}
       />
+
     </GestureHandlerRootView>
   );
 };
