@@ -26,10 +26,10 @@ const Journal = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [entry, setEntry] = useState<JournalEntry | null>(null);
+
   const [openMoodSheet, setOpenMoodSheet] = useState(false);
   const [openTagsSheet, setOpenTagsSheet] = useState(false);
-
-  const [entry, setEntry] = useState<JournalEntry | null>(null);
 
   const [tags, setTags] = useState<string[]>([]);
 
@@ -60,9 +60,12 @@ const Journal = () => {
         if (editor) editor.setContent(temp.body ?? "");
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
       }
     };
+    setIsLoading(true);
     fetchData();
+    setIsLoading(false);
   }, [id]);
 
   const onTitleChange = (
@@ -73,6 +76,7 @@ const Journal = () => {
 
   const submit = async () => {
     if (entry) {
+      setIsLoading(true);
       const title = titleRef.current.inputValue;
       const body = await editor.getHTML();
       await updateEntry(entry.id, {
@@ -81,6 +85,7 @@ const Journal = () => {
         body,
         tags,
       });
+      setIsLoading(false);
     }
   };
 
@@ -129,7 +134,7 @@ const Journal = () => {
         tags={tags}
       />
 
-      <Loader  />
+      {isLoading ? <Loader /> : ""}
     </GestureHandlerRootView>
   );
 };
