@@ -3,7 +3,7 @@ import {
   TextInputChangeEventData,
   StatusBar,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import useJournalEntriesStore, {
   NewJournalEntry,
 } from "@/state/useJournalEntriesStore";
@@ -19,10 +19,20 @@ import dayjs from "dayjs";
 import { showMessage } from "react-native-flash-message";
 import useUserStore from "@/state/useUserStore";
 import { router } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import TagsBottomSheet from "@/components/JournalScreen/TagsBottomSheet";
+import { Loader } from "lucide-react-native";
 
 const CreateJournalEntry = () => {
   const { addEntry } = useJournalEntriesStore();
   const { user } = useUserStore();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [openMoodSheet, setOpenMoodSheet] = useState(false);
+  const [openTagsSheet, setOpenTagsSheet] = useState(false);
+
+  const [tags, setTags] = useState<string[]>([]);
 
   const titleRef = useRef<{
     inputValue: string;
@@ -63,12 +73,11 @@ const CreateJournalEntry = () => {
       return;
     }
 
-    console.log(user);
-
     const newEntry: NewJournalEntry = {
       title,
       body,
       entryDateTime: dayjs().toDate(),
+      tags,
     };
 
     addEntry(newEntry);
@@ -83,26 +92,43 @@ const CreateJournalEntry = () => {
   };
 
   return (
-    <Animated.View
-      entering={FadeInRight.duration(150).delay(150)}
-      exiting={FadeOutRight.duration(150)}
-      style={{
-        flex: 1,
-        paddingVertical: spacing.small,
-        backgroundColor: colors.backgroundLight,
-        marginTop: StatusBar.currentHeight,
-      }}
-    >
-      <Header buttonText={"Create"} submit={submit} />
+    <GestureHandlerRootView>
+      <Animated.View
+        entering={FadeInRight.duration(150).delay(150)}
+        exiting={FadeOutRight.duration(150)}
+        style={{
+          flex: 1,
+          paddingVertical: spacing.small,
+          backgroundColor: colors.backgroundLight,
+          marginTop: StatusBar.currentHeight,
+          position: "relative",
+        }}
+      >
+        <Header buttonText={"Create"} submit={submit} />
 
-      <DateTimeSetter entryDateTime={dayjs().toDate()} />
+        <DateTimeSetter entryDateTime={dayjs().toDate()} />
 
-      <Toolbox />
+        <Toolbox
+          handleMoodTap={() => {}}
+          handleTagsTap={() => {
+            setOpenTagsSheet(true);
+          }}
+        />
 
-      <TitleSetter onTitleChange={onTitleChange} defaultValue={""} />
+        <TitleSetter onTitleChange={onTitleChange} defaultValue={""} />
 
-      <BodySetter editor={editor} />
-    </Animated.View>
+        <BodySetter editor={editor} />
+      </Animated.View>
+
+      <TagsBottomSheet
+        setOpenTagsSheet={setOpenTagsSheet}
+        openTagsSheet={openTagsSheet}
+        setTags={setTags}
+        tags={tags}
+      />
+
+      {isLoading ? <Loader /> : ""}
+    </GestureHandlerRootView>
   );
 };
 

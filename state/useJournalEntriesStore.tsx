@@ -27,6 +27,7 @@ export interface NewJournalEntry {
   title: string;
   body: string;
   entryDateTime: Date;
+  tags?: string[];
 }
 
 type JournalEntryStore = {
