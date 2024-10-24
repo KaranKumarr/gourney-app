@@ -8,7 +8,6 @@ import { Eye, EyeClosed } from "lucide-react-native";
 import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 import { showMessage } from "react-native-flash-message";
 import { validateEmail, validatePassword } from "@/constants/validate";
-// import { router } from "expo-router";
 
 const API_URL = `${process.env.EXPO_PUBLIC_GOURNEY_API_URL}auth/register`;
 

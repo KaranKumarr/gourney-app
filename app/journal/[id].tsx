@@ -18,10 +18,13 @@ import BodySetter from "@/components/JournalScreen/BodySetter";
 import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import TagsBottomSheet from "@/components/JournalScreen/TagsBottomSheet";
+import Loader from "@/components/core/Loader";
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
   const { fetchEntryById, updateEntry } = useJournalEntriesStore();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [openMoodSheet, setOpenMoodSheet] = useState(false);
   const [openTagsSheet, setOpenTagsSheet] = useState(false);
@@ -126,6 +129,7 @@ const Journal = () => {
         tags={tags}
       />
 
+      <Loader  />
     </GestureHandlerRootView>
   );
 };

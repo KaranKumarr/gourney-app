@@ -2,7 +2,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   ScrollView,
   RefreshControl,
 } from "react-native";
@@ -15,16 +14,11 @@ import SadEmoji from "@/assets/emoji-sad.svg";
 import StressedEmoji from "@/assets/emoji-stressed.svg";
 import CalmEmoji from "@/assets/emoji-calm.svg";
 import AngryEmoji from "@/assets/emoji-angry.svg";
-import dayjs from "dayjs";
 import { Plus } from "lucide-react-native";
 import useUserStore from "@/state/useUserStore";
 import { router } from "expo-router";
 import JournalEntryCard from "@/components/core/JournalEntryCard";
-import Animated, {
-  FadingTransition,
-  LinearTransition,
-  SequencedTransition,
-} from "react-native-reanimated";
+import Animated, { LinearTransition } from "react-native-reanimated";
 
 const Home = () => {
   const { journalEntries, fetchEntries } = useJournalEntriesStore();
