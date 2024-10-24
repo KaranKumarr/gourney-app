@@ -3,7 +3,13 @@ import React from "react";
 import { spacing, colors, textStyles } from "@/constants/theme";
 import { SmilePlus, Tags } from "lucide-react-native";
 
-const Toolbox = ({ handleMoodTap }: { handleMoodTap: () => void }) => {
+const Toolbox = ({
+  handleMoodTap,
+  handleTagsTap,
+}: {
+  handleMoodTap: () => void;
+  handleTagsTap: () => void;
+}) => {
   return (
     <View
       style={{
@@ -38,6 +44,7 @@ const Toolbox = ({ handleMoodTap }: { handleMoodTap: () => void }) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
+        onPress={handleTagsTap}
         style={{
           flexDirection: "row",
           alignItems: "center",
