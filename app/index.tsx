@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import { router } from "expo-router";
-import { Text, View } from "react-native";
-import { colors, textStyles } from "@/constants/theme";
+import { ActivityIndicator, View } from "react-native";
+import { colors } from "@/constants/theme";
 import useJournalEntriesStore from "@/state/useJournalEntriesStore";
 import useUserStore from "@/state/useUserStore";
 
@@ -33,9 +33,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text style={{ ...textStyles.heading, color: colors.backgroundLight }}>
-        Loading...
-      </Text>
+      <ActivityIndicator color={colors.backgroundLight} size={"large"} />
     </View>
   );
 }
