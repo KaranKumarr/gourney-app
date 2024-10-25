@@ -1,14 +1,14 @@
 import { StyleSheet } from "react-native";
 
 export const colors = {
-  primary: "#41D3BD",
-  secondary: "#a696f6",
+  primary: "#2C38A0",
+  secondary: "#aca9bb",
   backgroundLight: "#fff",
   backgroundDark: "#18181B",
-  textLight: "#18181B",
+  textLight: "#484554",
   textDark: "#FAFAFA",
   cardDark: "#2F2F31",
-  cardLight: "#f2f2f2",
+  cardLight: "#faf8ff",
   neutralLight: "#18181B7B",
   error: "#D81919FF",
 };
