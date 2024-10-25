@@ -4,7 +4,7 @@ import {
   StatusBar,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import useJournalEntriesStore, {
   JournalEntry,
 } from "@/state/useJournalEntriesStore";
@@ -19,6 +19,7 @@ import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import TagsBottomSheet from "@/components/JournalScreen/TagsBottomSheet";
 import Loader from "@/components/core/Loader";
+import { showMessage } from "react-native-flash-message";
 
 const Journal = () => {
   const { id } = useLocalSearchParams();
@@ -51,6 +52,8 @@ const Journal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
+
       try {
         const temp: JournalEntry = await fetchEntryById(+id);
         setEntry(temp);
@@ -62,10 +65,10 @@ const Journal = () => {
         console.log(error);
         setIsLoading(false);
       }
+      setIsLoading(false);
     };
-    setIsLoading(true);
     fetchData();
-    setIsLoading(false);
+
   }, [id]);
 
   const onTitleChange = (
@@ -86,6 +89,12 @@ const Journal = () => {
         tags,
       });
       setIsLoading(false);
+      router.back();
+      showMessage({
+        message: "Updated.",
+        description: "Changes have been saved in our system.",
+        type: "success",
+      });
     }
   };
 
