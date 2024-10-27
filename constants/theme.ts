@@ -8,7 +8,7 @@ export const colors = {
   textLight: "#484554",
   textDark: "#FAFAFA",
   cardDark: "#2F2F31",
-  cardLight: "#faf8ff",
+  cardLight: "#f2f2f2",
   neutralLight: "#18181B7B",
   error: "#D81919FF",
 };

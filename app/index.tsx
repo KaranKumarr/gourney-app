@@ -16,7 +16,7 @@ export default function Index() {
       if (token) {
         await fetchEntries();
         await fetchProfile();
-        router.replace("/tabs/");
+        router.replace("/tabs/search");
       } else {
         router.replace("/auth");
       }
