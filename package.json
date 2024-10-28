@@ -18,9 +18,12 @@
     "@10play/tentap-editor": "^0.5.21",
     "@expo-google-fonts/roboto": "^0.2.3",
     "@expo/vector-icons": "^14.0.2",
+    "@gorhom/bottom-sheet": "^5",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^6.0.2",
+    "@types/react-native-calendar-picker": "^8.0.0",
     "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "expo": "~51.0.22",
     "expo-constants": "~16.0.2",
@@ -36,6 +39,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
+    "react-native-calendar-picker": "^8.0.5",
     "react-native-flash-message": "^0.4.2",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-reanimated": "~3.10.1",
@@ -43,8 +47,7 @@
     "react-native-screens": "3.31.1",
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
-    "zustand": "^5.0.0-rc.2",
-    "@gorhom/bottom-sheet": "^5"
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

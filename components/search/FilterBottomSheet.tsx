@@ -16,6 +16,7 @@ import Animated, {
   RotateInDownRight,
   withTiming,
 } from "react-native-reanimated";
+import CalendarPicker from "react-native-calendar-picker";
 import { spacing, textStyles, colors } from "@/constants/theme";
 import { ChevronUp } from "lucide-react-native";
 
@@ -45,6 +46,11 @@ const FilterBottomSheet = ({
   isFilterMenuOpen: boolean;
   setFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const [dates, setDates] = useState<any>({
+    startDate: null,
+    endDate: null,
+  });
+
   const rotate = useSharedValue<string>("0deg");
 
   const bottomSheetModalRef = useRef<BottomSheet>(null);
@@ -119,6 +125,7 @@ const FilterBottomSheet = ({
             paddingHorizontal: spacing.medium,
             paddingVertical: spacing.small,
             minHeight: 120,
+            gap: spacing.large,
           }}
         >
           <View style={{ gap: spacing.medium }}>
@@ -168,6 +175,31 @@ const FilterBottomSheet = ({
                 );
               })}
             </View>
+          </View>
+
+          <View style={{ gap: spacing.medium }}>
+            <Text style={[textStyles.subheading]}>Find for specific dates</Text>
+            <CalendarPicker
+              startFromMonday={true}
+              allowRangeSelection={true}
+              allowBackwardRangeSelect={true}
+              maxDate={Date()}
+              selectedDayColor={colors.primary}
+              selectedDayTextColor={colors.backgroundLight}
+              onDateChange={(date, date2) => {
+                if (date2 === "START_DATE") {
+                  setDates({
+                    startDate: date,
+                    endDate: dates.endDate,
+                  });
+                } else {
+                  setDates({
+                    startDate: dates.startDate,
+                    endDate: date,
+                  });
+                }
+              }}
+            />
           </View>
         </BottomSheetView>
       </BottomSheet>
