@@ -1,7 +1,7 @@
 export const sortOptions = [
   {
     name: "Date Created",
-    value: "create",
+    value: "entryDateTime",
   },
   {
     name: "Title",
@@ -9,6 +9,6 @@ export const sortOptions = [
   },
   {
     name: "Last Updated",
-    value: "update",
+    value: "updatedAt",
   },
 ];
