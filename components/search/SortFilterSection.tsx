@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { spacing, textStyles, colors } from "@/constants/theme";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 import Animated, {
@@ -7,6 +7,8 @@ import Animated, {
   RotateInDownRight,
   useAnimatedStyle,
   useSharedValue,
+  FadeInUp,
+  FadeOutUp,
 } from "react-native-reanimated";
 import { sortOptions } from "@/constants/constants";
 
@@ -23,9 +25,23 @@ const SortFilterSection = ({
 }) => {
   const rotate = useSharedValue<string>("0deg");
 
-  const style = useAnimatedStyle(() => ({
+  const rotateStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: rotate.value }],
   }));
+
+  const headerChevron = useSharedValue<string>("0deg");
+
+  const headerChevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: headerChevron.value }],
+  }));
+
+  useLayoutEffect(() => {
+    if (currentFilterOpen === "sort") {
+      headerChevron.value = withTiming("-90deg", { duration: 250 });
+    } else {
+      headerChevron.value = withTiming("0deg", { duration: 250 });
+    }
+  }, [currentFilterOpen]);
 
   return (
     <View style={{ gap: spacing.medium }}>
@@ -40,10 +56,16 @@ const SortFilterSection = ({
         style={{ flexDirection: "row", justifyContent: "space-between" }}
       >
         <Text style={[textStyles.subheading]}>Sort By</Text>
-        <ChevronDown size={24} color={colors.textLight} />
+        <Animated.View style={[headerChevronStyle]}>
+          <ChevronDown size={24} color={colors.textLight} />
+        </Animated.View>
       </TouchableOpacity>
       {currentFilterOpen === "sort" ? (
-        <Animated.View style={{ flexDirection: "row", gap: spacing.small }}>
+        <Animated.View
+          entering={FadeInUp.duration(150)}
+          exiting={FadeOutUp.duration(150)}
+          style={{ flexDirection: "row", gap: spacing.small }}
+        >
           {sortOptions.map((sort) => {
             return (
               <TouchableOpacity
@@ -79,7 +101,7 @@ const SortFilterSection = ({
                 </Text>
                 {sortValue.includes(sort.value) ? (
                   <Animated.View entering={RotateInDownRight}>
-                    <Animated.View style={[style]}>
+                    <Animated.View style={[rotateStyle]}>
                       <ChevronUp width={16} color={colors.textLight} />
                     </Animated.View>
                   </Animated.View>
