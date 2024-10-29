@@ -14,7 +14,6 @@ import FilterBottomSheet from "@/components/search/FilterBottomSheet";
 const SearchScreen = () => {
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
 
-  const [sortValue, setSortValue] = useState("create");
 
   return (
     <GestureHandlerRootView
@@ -63,8 +62,6 @@ const SearchScreen = () => {
       <FilterBottomSheet
         setFilterMenuOpen={setFilterMenuOpen}
         isFilterMenuOpen={isFilterMenuOpen}
-        sortValue={sortValue}
-        setSortValue={setSortValue}
       />
     </GestureHandlerRootView>
   );

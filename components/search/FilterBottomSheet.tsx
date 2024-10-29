@@ -1,48 +1,16 @@
-import {
-  View,
-  Text,
-  Dimensions,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Dimensions, TouchableWithoutFeedback } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useNavigation } from "expo-router";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  FadeIn,
-  FadeOutDown,
-  RotateInDownRight,
-  withTiming,
-} from "react-native-reanimated";
-import CalendarPicker from "react-native-calendar-picker";
-import { spacing, textStyles, colors } from "@/constants/theme";
-import { ChevronUp } from "lucide-react-native";
-
-const sortOptions = [
-  {
-    name: "Date Created",
-    value: "create",
-  },
-  {
-    name: "Title",
-    value: "title",
-  },
-  {
-    name: "Last Updated",
-    value: "update",
-  },
-];
+import Animated, { FadeIn, FadeOutDown } from "react-native-reanimated";
+import { spacing } from "@/constants/theme";
+import SortFilterSection from "./SortFilterSection";
+import DatesFilterSection from "./DatesFilterSection";
 
 const FilterBottomSheet = ({
-  sortValue,
-  setSortValue,
   isFilterMenuOpen,
   setFilterMenuOpen,
 }: {
-  sortValue: string;
-  setSortValue: React.Dispatch<React.SetStateAction<string>>;
   isFilterMenuOpen: boolean;
   setFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -51,14 +19,12 @@ const FilterBottomSheet = ({
     endDate: null,
   });
 
-  const rotate = useSharedValue<string>("0deg");
+  const [sortValue, setSortValue] = useState("");
+
+  const [currentFilterOpen, setCurrentFilterOpen] = useState("sort");
 
   const bottomSheetModalRef = useRef<BottomSheet>(null);
   const navigation = useNavigation();
-
-  const style = useAnimatedStyle(() => ({
-    transform: [{ rotate: rotate.value }],
-  }));
 
   useEffect(() => {
     if (isFilterMenuOpen) {
@@ -125,82 +91,22 @@ const FilterBottomSheet = ({
             paddingHorizontal: spacing.medium,
             paddingVertical: spacing.small,
             minHeight: 120,
-            gap: spacing.large,
+            gap: spacing.medium,
           }}
         >
-          <View style={{ gap: spacing.medium }}>
-            <Text style={[textStyles.subheading]}>Sort By</Text>
-            <View style={{ flexDirection: "row", gap: spacing.small }}>
-              {sortOptions.map((sort) => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (sort.value === sortValue) {
-                        rotate.value = withTiming("180deg", { duration: 250 });
-                        setSortValue("-" + sort.value);
-                      } else {
-                        rotate.value = withTiming("0deg", { duration: 250 });
-                        setSortValue(sort.value);
-                      }
-                    }}
-                    key={sort.value}
-                    style={{
-                      backgroundColor: colors.cardLight,
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: spacing.small / 2,
-                      borderRadius: 4,
-                      flexDirection: "row",
-                      gap: spacing.small / 2,
-                      borderWidth: 1,
-                      borderColor: sortValue.includes(sort.value)
-                        ? colors.textLight
-                        : colors.cardLight,
-                    }}
-                  >
-                    <Text style={[textStyles.label, { fontSize: 12 }]}>
-                      {sort.name}
-                    </Text>
-                    {sortValue.includes(sort.value) ? (
-                      <Animated.View entering={RotateInDownRight}>
-                        <Animated.View style={[style]}>
-                          <ChevronUp width={16} color={colors.textLight} />
-                        </Animated.View>
-                      </Animated.View>
-                    ) : (
-                      ""
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
+          <SortFilterSection
+            sortValue={sortValue}
+            setSortValue={setSortValue}
+            currentFilterOpen={currentFilterOpen}
+            setCurrentFilterOpen={setCurrentFilterOpen}
+          />
 
-          <View style={{ gap: spacing.medium }}>
-            <Text style={[textStyles.subheading]}>Find for specific dates</Text>
-            <CalendarPicker
-              startFromMonday={true}
-              allowRangeSelection={true}
-              allowBackwardRangeSelect={true}
-              maxDate={Date()}
-              selectedDayColor={colors.primary}
-              selectedDayTextColor={colors.backgroundLight}
-              onDateChange={(date, date2) => {
-                if (date2 === "START_DATE") {
-                  setDates({
-                    startDate: date,
-                    endDate: dates.endDate,
-                  });
-                } else {
-                  setDates({
-                    startDate: dates.startDate,
-                    endDate: date,
-                  });
-                }
-              }}
-            />
-          </View>
+          <DatesFilterSection
+            dateValue={dates}
+            setDateValue={setDates}
+            currentFilterOpen={currentFilterOpen}
+            setCurrentFilterOpen={setCurrentFilterOpen}
+          />
         </BottomSheetView>
       </BottomSheet>
     </>
