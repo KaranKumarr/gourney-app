@@ -37,6 +37,7 @@ type JournalEntryStore = {
   addEntry: (entry: NewJournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
   removeEntry: (id: number) => void;
+  fetchfilteredEntries: ({ sort }: { sort?: string }) => any;
 };
 
 const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
@@ -54,6 +55,23 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
         console.error("API Error:", error);
         console.error("API Error:", error.message);
       });
+  },
+
+  fetchfilteredEntries: async ({ sort }) => {
+    let entries: JournalEntry[] = [];
+
+    apiPath
+      .get("journal", { sort })
+      .then((response) => {
+        const data: JournalEntry[] = response.data;
+        entries = data;
+      })
+      .catch((error) => {
+        // Handle errors, including token-related errors
+        console.error("API Error:", error);
+        console.error("API Error:", error.message);
+      });
+    return entries;
   },
 
   fetchEntryById: async (id: number) => {

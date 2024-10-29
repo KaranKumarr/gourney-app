@@ -5,15 +5,36 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { colors, spacing } from "@/constants/theme";
-import { Search } from "lucide-react-native";
+import { Filter, Search } from "lucide-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FilterBottomSheet from "@/components/search/FilterBottomSheet";
+import useJournalEntriesStore, {
+  JournalEntry,
+} from "@/state/useJournalEntriesStore";
 
 const SearchScreen = () => {
-  const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
+  const { fetchfilteredEntries } = useJournalEntriesStore();
 
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const [filters, setFilters] = useState<any>({
+    sort: null,
+    dates: null,
+  });
+
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchfilteredEntries({ sort: filters.sort });
+      return data;
+    };
+    if (filters.sort) {
+      const res = fetchData();
+      console.log(res);
+    }
+  }, [filters]);
 
   return (
     <GestureHandlerRootView
@@ -40,27 +61,22 @@ const SearchScreen = () => {
       >
         <Search size={24} color={colors.textLight} />
         <TextInput style={{ flex: 1 }} placeholder="Search through diary..." />
-      </View>
-
-      <View style={{ flexDirection: "row", paddingVertical: spacing.medium }}>
         <TouchableOpacity
-          onPress={() => setFilterMenuOpen(!isFilterMenuOpen)}
+          onPress={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
           style={{
             backgroundColor: colors.cardLight,
-            paddingVertical: spacing.small,
-            paddingHorizontal: spacing.medium,
-            borderRadius: 4,
+            padding: spacing.small,
+            borderRadius: 100,
             position: "relative",
-            borderWidth: 1,
-            borderColor: colors.neutralLight,
           }}
         >
-          <Text>Sort By</Text>
+          <Filter size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>
 
       <FilterBottomSheet
-        setFilterMenuOpen={setFilterMenuOpen}
+        setFilters={setFilters}
+        setIsFilterMenuOpen={setIsFilterMenuOpen}
         isFilterMenuOpen={isFilterMenuOpen}
       />
     </GestureHandlerRootView>

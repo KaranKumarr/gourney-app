@@ -1,18 +1,25 @@
-import { Dimensions, TouchableWithoutFeedback } from "react-native";
+import {
+  Dimensions,
+  TouchableOpacity,
+  Text,
+  TouchableWithoutFeedback,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useNavigation } from "expo-router";
 import Animated, { FadeIn, FadeOutDown } from "react-native-reanimated";
-import { spacing } from "@/constants/theme";
+import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
 import SortFilterSection from "./SortFilterSection";
 import DatesFilterSection from "./DatesFilterSection";
 
 const FilterBottomSheet = ({
   isFilterMenuOpen,
-  setFilterMenuOpen,
+  setIsFilterMenuOpen,
+  setFilters,
 }: {
   isFilterMenuOpen: boolean;
-  setFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setFilters: React.Dispatch<React.SetStateAction<object>>;
 }) => {
   const [dates, setDates] = useState<any>({
     startDate: null,
@@ -48,6 +55,8 @@ const FilterBottomSheet = ({
       }, 100);
     }
   }, [isFilterMenuOpen]);
+
+
   return (
     <>
       {isFilterMenuOpen ? (
@@ -60,7 +69,7 @@ const FilterBottomSheet = ({
             left: 0,
           }}
           onPress={() => {
-            setFilterMenuOpen(false);
+            setIsFilterMenuOpen(false);
           }}
         >
           <Animated.View
@@ -107,6 +116,31 @@ const FilterBottomSheet = ({
             currentFilterOpen={currentFilterOpen}
             setCurrentFilterOpen={setCurrentFilterOpen}
           />
+
+          <TouchableOpacity
+            onPress={() => {
+              setFilters({
+                sort: sortValue,
+                dates: dates.startDate && dates.endDate ? dates : null,
+              });
+
+              setIsFilterMenuOpen(false);
+            }}
+            style={[
+              defaultStyling.primaryButton,
+              { paddingVertical: spacing.small, marginTop: spacing.small },
+            ]}
+          >
+            <Text
+              style={[
+                defaultStyling.primaryButtonText,
+                textStyles.label,
+                { textTransform: "uppercase", color: colors.backgroundLight },
+              ]}
+            >
+              Filter
+            </Text>
+          </TouchableOpacity>
         </BottomSheetView>
       </BottomSheet>
     </>
