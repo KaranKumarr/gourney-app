@@ -16,8 +16,11 @@ import useJournalEntriesStore, {
   JournalEntry,
 } from "@/state/useJournalEntriesStore";
 import JournalEntryCard from "@/components/core/JournalEntryCard";
+import Loader from "@/components/core/Loader";
 
 const SearchScreen = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { fetchfilteredEntries } = useJournalEntriesStore();
 
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
@@ -28,11 +31,14 @@ const SearchScreen = () => {
 
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
 
+  const fetchData = async () => {
+    setIsLoading(true);
+    const data = await fetchfilteredEntries({ sort: filters.sort });
+    setJournalEntries(data);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchfilteredEntries({ sort: filters.sort });
-      setJournalEntries(data);
-    };
     if (filters.sort) {
       fetchData();
     }
@@ -42,8 +48,7 @@ const SearchScreen = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    const data = await fetchfilteredEntries({ sort: filters.sort });
-    setJournalEntries(data);
+    await fetchData();
     setRefreshing(false);
   };
 
@@ -106,6 +111,8 @@ const SearchScreen = () => {
         setIsFilterMenuOpen={setIsFilterMenuOpen}
         isFilterMenuOpen={isFilterMenuOpen}
       />
+
+      {isLoading ? <Loader /> : ""}
     </GestureHandlerRootView>
   );
 };
