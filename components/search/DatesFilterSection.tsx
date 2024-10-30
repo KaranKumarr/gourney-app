@@ -10,6 +10,7 @@ import Animated, {
 import { spacing, textStyles, colors } from "@/constants/theme";
 import { ChevronDown } from "lucide-react-native";
 import CalendarPicker from "react-native-calendar-picker";
+import { endOfDay } from "date-fns";
 
 const DatesFilterSection = ({
   currentFilterOpen,
@@ -77,7 +78,7 @@ const DatesFilterSection = ({
               } else {
                 setDateValue({
                   startDate: dateValue.startDate,
-                  endDate: date,
+                  endDate: endOfDay(date),
                 });
               }
             }}

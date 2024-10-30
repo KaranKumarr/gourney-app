@@ -3,6 +3,11 @@ import { ApiClient } from "@/constants/api";
 
 const apiPath = ApiClient();
 
+interface BetweenDates {
+  startDate: Date;
+  endDate: Date;
+}
+
 export enum MoodType {
   Happy = "Happy",
   Sad = "Sad",
@@ -37,7 +42,13 @@ type JournalEntryStore = {
   addEntry: (entry: NewJournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
   removeEntry: (id: number) => void;
-  fetchfilteredEntries: ({ sort }: { sort?: string }) => any;
+  fetchfilteredEntries: ({
+    sort,
+  }: {
+    sort?: string;
+    search?: string;
+    dates?: BetweenDates;
+  }) => any;
 };
 
 const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
@@ -57,11 +68,14 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
       });
   },
 
-  fetchfilteredEntries: async ({ sort }) => {
+  fetchfilteredEntries: async ({ sort, search, dates }) => {
     let entries: JournalEntry[] = [];
-
     try {
-      const res = await apiPath.get("journal", { sort });
+      const res = await apiPath.get("journal", {
+        sort,
+        search,
+        dates: JSON.stringify(dates),
+      });
       entries = res.data;
     } catch (error: any) {
       // Handle errors, including token-related errors

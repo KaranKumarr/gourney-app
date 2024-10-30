@@ -6,8 +6,10 @@ import {
   TouchableOpacity,
   FlatList,
   RefreshControl,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { colors, spacing } from "@/constants/theme";
 import { Filter, Search } from "lucide-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -24,6 +26,13 @@ const SearchScreen = () => {
   const { fetchfilteredEntries } = useJournalEntriesStore();
 
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+
+  const searchQueryRef = useRef<{
+    inputValue: string;
+  }>({
+    inputValue: "",
+  });
+
   const [filters, setFilters] = useState<any>({
     sort: null,
     dates: null,
@@ -33,7 +42,14 @@ const SearchScreen = () => {
 
   const fetchData = async () => {
     setIsLoading(true);
-    const data = await fetchfilteredEntries({ sort: filters.sort });
+    const _filter: any = {
+      sort: filters.sort,
+      search: searchQueryRef.current.inputValue,
+    };
+    if (filters.dates) {
+      _filter.dates = filters.dates;
+    }
+    const data = await fetchfilteredEntries(_filter);
     setJournalEntries(data);
     setIsLoading(false);
   };
@@ -77,7 +93,16 @@ const SearchScreen = () => {
         }}
       >
         <Search size={24} color={colors.textLight} />
-        <TextInput style={{ flex: 1 }} placeholder="Search through diary..." />
+        <TextInput
+          onSubmitEditing={async () => {
+            await fetchData();
+          }}
+          onChange={(event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+            searchQueryRef.current.inputValue = event.nativeEvent.text;
+          }}
+          style={{ flex: 1 }}
+          placeholder="Search through diary..."
+        />
         <TouchableOpacity
           onPress={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
           style={{
