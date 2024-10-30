@@ -60,17 +60,15 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   fetchfilteredEntries: async ({ sort }) => {
     let entries: JournalEntry[] = [];
 
-    apiPath
-      .get("journal", { sort })
-      .then((response) => {
-        const data: JournalEntry[] = response.data;
-        entries = data;
-      })
-      .catch((error) => {
-        // Handle errors, including token-related errors
-        console.error("API Error:", error);
-        console.error("API Error:", error.message);
-      });
+    try {
+      const res = await apiPath.get("journal", { sort });
+      entries = res.data;
+    } catch (error: any) {
+      // Handle errors, including token-related errors
+      console.error("API Error:", error);
+      console.error("API Error:", error!.message);
+    }
+
     return entries;
   },
 
@@ -80,7 +78,6 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
 
   // Action to add an item
   addEntry: (item: NewJournalEntry) => {
-    console.log(item);
     apiPath
       .post("journal", item, undefined)
       .then((response) => {
@@ -113,8 +110,6 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
       .patch("journal/" + id, updatedItem, undefined)
       .then((response) => {
         const data: JournalEntry = response.data;
-        console.log("data");
-        console.log(data);
 
         set((state: { journalEntries: any[] }) => ({
           journalEntries: state.journalEntries.map((item: { id: any }) =>

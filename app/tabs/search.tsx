@@ -4,6 +4,8 @@ import {
   TextInput,
   StatusBar,
   TouchableOpacity,
+  FlatList,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { colors, spacing } from "@/constants/theme";
@@ -13,6 +15,7 @@ import FilterBottomSheet from "@/components/search/FilterBottomSheet";
 import useJournalEntriesStore, {
   JournalEntry,
 } from "@/state/useJournalEntriesStore";
+import JournalEntryCard from "@/components/core/JournalEntryCard";
 
 const SearchScreen = () => {
   const { fetchfilteredEntries } = useJournalEntriesStore();
@@ -28,13 +31,21 @@ const SearchScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchfilteredEntries({ sort: filters.sort });
-      return data;
+      setJournalEntries(data);
     };
     if (filters.sort) {
-      const res = fetchData();
-      console.log(res);
+      fetchData();
     }
   }, [filters]);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    const data = await fetchfilteredEntries({ sort: filters.sort });
+    setJournalEntries(data);
+    setRefreshing(false);
+  };
 
   return (
     <GestureHandlerRootView
@@ -43,7 +54,8 @@ const SearchScreen = () => {
         backgroundColor: colors.backgroundLight,
         marginTop: StatusBar.currentHeight,
         paddingHorizontal: spacing.medium,
-        paddingVertical: spacing.medium,
+        paddingTop: spacing.medium,
+        gap: spacing.medium,
       }}
     >
       {/* Search */}
@@ -73,6 +85,21 @@ const SearchScreen = () => {
           <Filter size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>
+
+      <FlatList
+        data={journalEntries}
+        renderItem={(entry) => <JournalEntryCard entry={entry.item} />}
+        keyExtractor={(entry) => entry.id.toString()}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            progressBackgroundColor={colors.backgroundLight}
+            style={{ elevation: 2 }}
+          />
+        }
+      />
 
       <FilterBottomSheet
         setFilters={setFilters}

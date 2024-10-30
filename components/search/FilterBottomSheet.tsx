@@ -26,7 +26,7 @@ const FilterBottomSheet = ({
     endDate: null,
   });
 
-  const [sortValue, setSortValue] = useState("");
+  const [sortValue, setSortValue] = useState("entryDateTime");
 
   const [currentFilterOpen, setCurrentFilterOpen] = useState("sort");
 
@@ -55,7 +55,6 @@ const FilterBottomSheet = ({
       }, 100);
     }
   }, [isFilterMenuOpen]);
-
 
   return (
     <>
