@@ -63,9 +63,15 @@ const SearchScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
-    setRefreshing(true);
-    await fetchData();
-    setRefreshing(false);
+    if (
+      filters.sort ||
+      filters.dates ||
+      searchQueryRef.current.inputValue.length > 0
+    ) {
+      setRefreshing(true);
+      await fetchData();
+      setRefreshing(false);
+    }
   };
 
   return (
