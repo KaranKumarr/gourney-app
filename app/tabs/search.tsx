@@ -55,6 +55,20 @@ const SearchScreen = () => {
       setRefreshing(false);
     }
   };
+
+  const clearFilters = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setFilters({
+        sort: null,
+        dates: null,
+      });
+      setSearchQuery("");
+      setJournalEntries([]);
+      setIsLoading(false);
+    }, 300);
+  };
+
   return (
     <GestureHandlerRootView
       style={{
@@ -65,6 +79,7 @@ const SearchScreen = () => {
       }}
     >
       <SearchBar
+        clearFilters={clearFilters}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         fetchEntries={fetchData}

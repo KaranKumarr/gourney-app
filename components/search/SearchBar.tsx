@@ -11,12 +11,14 @@ const SearchBar = ({
   fetchEntries,
   setIsFilterMenuOpen,
   filters,
+  clearFilters,
 }: {
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   fetchEntries: () => Promise<void>;
   setIsFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   filters: any;
+  clearFilters: () => void;
 }) => {
   const [search, setSearch] = useState("");
 
@@ -132,6 +134,7 @@ const SearchBar = ({
         )}
         {filters.sort || filters.dates || searchQuery.length > 0 ? (
           <TouchableOpacity
+            onPress={clearFilters}
             style={{
               marginTop: spacing.small,
               padding: spacing.small / 2,
