@@ -11,11 +11,7 @@ import Loader from "@/components/core/Loader";
 import SearchBar from "@/components/search/SearchBar";
 
 const SearchScreen = () => {
-    const searchQueryRef = useRef<{
-      inputValue: string;
-    }>({
-      inputValue: "",
-    });
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +30,7 @@ const SearchScreen = () => {
     setIsLoading(true);
     const _filter: any = {
       sort: filters.sort,
-      search: searchQueryRef.current.inputValue,
+      search: searchQuery,
     };
     if (filters.dates) {
       _filter.dates = filters.dates;
@@ -53,11 +49,7 @@ const SearchScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
-    if (
-      filters.sort ||
-      filters.dates ||
-      searchQueryRef.current.inputValue.length > 0
-    ) {
+    if (filters.sort || filters.dates || searchQuery.length > 0) {
       setRefreshing(true);
       await fetchData();
       setRefreshing(false);
@@ -73,7 +65,8 @@ const SearchScreen = () => {
       }}
     >
       <SearchBar
-        searchQueryRef={searchQueryRef}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
         fetchEntries={fetchData}
         setIsFilterMenuOpen={setIsFilterMenuOpen}
         filters={filters}

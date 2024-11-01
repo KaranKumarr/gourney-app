@@ -1,31 +1,25 @@
-import {
-  View,
-  Text,
-  NativeSyntheticEvent,
-  TextInput,
-  TextInputChangeEventData,
-  TouchableOpacity,
-} from "react-native";
-import React, { useRef } from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
 import { getSortNameByValue } from "@/constants/constants";
 import { spacing, colors, textStyles } from "@/constants/theme";
 import { format, isSameDay } from "date-fns";
 import { Search, Filter, ChevronDown, CircleX } from "lucide-react-native";
-const searchInputRef = useRef<TextInput>(null);
 
 const SearchBar = ({
-  searchQueryRef,
+  searchQuery,
+  setSearchQuery,
   fetchEntries,
   setIsFilterMenuOpen,
   filters,
 }: {
-  searchQueryRef: React.MutableRefObject<{
-    inputValue: string;
-  }>;
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   fetchEntries: () => Promise<void>;
   setIsFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   filters: any;
 }) => {
+  const [search, setSearch] = useState("");
+
   return (
     <View
       style={{
@@ -48,19 +42,16 @@ const SearchBar = ({
       >
         <Search size={24} color={colors.textLight} />
         <TextInput
-          ref={searchInputRef}
+          value={search}
           onSubmitEditing={async () => {
-            if (
-              searchQueryRef.current.inputValue.length > 0 &&
-              searchInputRef.current
-            ) {
+            if (search.length > 0) {
               await fetchEntries();
-              searchInputRef.current.clear();
-              searchQueryRef.current.inputValue = "";
+              setSearch("");
+              setSearchQuery(search);
             }
           }}
-          onChange={(event: NativeSyntheticEvent<TextInputChangeEventData>) => {
-            searchQueryRef.current.inputValue = event.nativeEvent.text;
+          onChangeText={(text) => {
+            setSearch(text);
           }}
           style={{ flex: 1 }}
           placeholder="Search through diary..."
@@ -71,7 +62,6 @@ const SearchBar = ({
           }}
           style={{
             padding: spacing.small,
-            borderRadius: 100,
             position: "relative",
           }}
         >
@@ -79,7 +69,7 @@ const SearchBar = ({
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row", gap: spacing.small / 2 }}>
-        {searchQueryRef.current.inputValue.length > 0 && (
+        {searchQuery.length > 0 && (
           <View
             style={{
               backgroundColor: colors.backgroundLight,
@@ -91,9 +81,7 @@ const SearchBar = ({
               gap: spacing.small / 2,
             }}
           >
-            <Text style={[textStyles.smallText]}>
-              {`"${searchQueryRef.current.inputValue}"`}
-            </Text>
+            <Text style={[textStyles.smallText]}>{`"${searchQuery}"`}</Text>
           </View>
         )}
         {filters.sort && (
@@ -142,9 +130,7 @@ const SearchBar = ({
             </Text>
           </View>
         )}
-        {filters.sort ||
-        filters.dates ||
-        searchQueryRef.current.inputValue.length > 0 ? (
+        {filters.sort || filters.dates || searchQuery.length > 0 ? (
           <TouchableOpacity
             style={{
               marginTop: spacing.small,
