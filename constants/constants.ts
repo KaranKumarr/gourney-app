@@ -12,3 +12,10 @@ export const sortOptions = [
     value: "updatedAt",
   },
 ];
+
+export const getSortNameByValue = (val: string) => {
+  const option = sortOptions.find((op) => {
+    return op.value === val;
+  });
+  return option?.name ?? null;
+};
