@@ -37,22 +37,27 @@ export interface NewJournalEntry {
 
 type JournalEntryStore = {
   journalEntries: JournalEntry[];
+  tags: { tag: string; count: number }[];
   fetchEntries: () => void;
   fetchEntryById: (id: number) => any;
   addEntry: (entry: NewJournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
   removeEntry: (id: number) => void;
+  fetchTags: () => void;
   fetchfilteredEntries: ({
     sort,
   }: {
     sort?: string;
     search?: string;
     dates?: BetweenDates;
+    tags?: string[];
   }) => any;
 };
 
 const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
-  journalEntries: [], // Initial state
+  journalEntries: [],
+  tags: [],
+  // Initial state
   // Action to fetch journalEntries from an API
   fetchEntries: async () => {
     apiPath
@@ -68,13 +73,28 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
       });
   },
 
-  fetchfilteredEntries: async ({ sort, search, dates }) => {
+  fetchTags: async () => {
+    apiPath
+      .get("journal/tags", null)
+      .then((response) => {
+        const data: { tag: string; count: number }[] = response.data;
+        set({ tags: data });
+      })
+      .catch((error) => {
+        // Handle errors, including token-related errors
+        console.error("API Error:", error);
+        console.error("API Error:", error.message);
+      });
+  },
+
+  fetchfilteredEntries: async ({ sort, search, dates, tags }) => {
     let entries: JournalEntry[] = [];
     try {
       const res = await apiPath.get("journal", {
         sort,
         search,
         dates: JSON.stringify(dates),
+        tags: JSON.stringify(tags),
       });
       entries = res.data;
     } catch (error: any) {
@@ -111,7 +131,7 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   removeEntry: (id: number) =>
     set((state: { journalEntries: JournalEntry[] }) => ({
       journalEntries: state.journalEntries.filter(
-        (item: { id: number }) => item.id !== id
+        (item: { id: number }) => item.id !== id,
       ),
     })),
 
@@ -127,7 +147,7 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
 
         set((state: { journalEntries: any[] }) => ({
           journalEntries: state.journalEntries.map((item: { id: any }) =>
-            item.id === id ? updatedItem : item
+            item.id === id ? updatedItem : item,
           ),
         }));
       })

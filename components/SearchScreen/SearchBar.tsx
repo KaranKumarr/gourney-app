@@ -3,7 +3,13 @@ import React, { useState } from "react";
 import { getSortNameByValue } from "@/constants/constants";
 import { colors, spacing, textStyles } from "@/constants/theme";
 import { format, isSameDay } from "date-fns";
-import { ChevronDown, CircleX, Filter, Search } from "lucide-react-native";
+import {
+  ChevronDown,
+  CircleX,
+  Filter,
+  Search,
+  Tags,
+} from "lucide-react-native";
 
 type SearchBar = {
   searchQuery: React.MutableRefObject<{ inputValue: string }>;
@@ -70,7 +76,13 @@ const SearchBar = ({
           <Filter size={24} color={colors.primary} />
         </TouchableOpacity>
       </View>
-      <View style={{ flexDirection: "row", gap: spacing.small / 2 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: spacing.small / 2,
+          flexWrap: "wrap",
+        }}
+      >
         {searchQuery.current.inputValue.length > 0 && (
           <View
             style={{
@@ -134,9 +146,33 @@ const SearchBar = ({
             </Text>
           </View>
         )}
+        {filters.tags && filters.tags.length > 0 ? (
+          <View
+            style={{
+              backgroundColor: colors.backgroundLight,
+              marginTop: spacing.small,
+              paddingVertical: spacing.small / 2,
+              paddingHorizontal: spacing.small,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: spacing.small / 2,
+            }}
+          >
+            <Tags color={colors.textLight} size={16} />
+            {filters.tags.map((tag: string, index: number) => (
+              <Text key={index} style={[textStyles.smallText]}>
+                {tag}
+                {index === filters.tags.length - 1 ? "" : ","}
+              </Text>
+            ))}
+          </View>
+        ) : (
+          ""
+        )}
         {filters.sort ||
         filters.dates ||
-        searchQuery.current.inputValue.length > 0 ? (
+        searchQuery.current.inputValue.length > 0 ||
+        filters.tags!.length > 0 ? (
           <TouchableOpacity
             onPress={clearFilters}
             style={{

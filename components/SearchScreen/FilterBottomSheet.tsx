@@ -11,6 +11,8 @@ import Animated, { FadeIn, FadeOutDown } from "react-native-reanimated";
 import { colors, defaultStyling, spacing, textStyles } from "@/constants/theme";
 import SortFilterSection from "./SortFilterSection";
 import DatesFilterSection from "./DatesFilterSection";
+import TagsFilterSection from "@/components/SearchScreen/TagsFilterSection";
+import useJournalEntriesStore from "@/state/useJournalEntriesStore";
 
 const FilterBottomSheet = ({
   isFilterMenuOpen,
@@ -21,12 +23,16 @@ const FilterBottomSheet = ({
   setIsFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setFilters: React.Dispatch<React.SetStateAction<object>>;
 }) => {
+  const { fetchTags } = useJournalEntriesStore();
+
   const [dates, setDates] = useState<any>({
     startDate: null,
     endDate: null,
   });
 
   const [sortValue, setSortValue] = useState("entryDateTime");
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const [currentFilterOpen, setCurrentFilterOpen] = useState("sort");
 
@@ -44,6 +50,7 @@ const FilterBottomSheet = ({
         bottomSheetModalRef.current?.snapToIndex(1);
       }, 100);
     } else {
+      fetchTags();
       bottomSheetModalRef.current?.close();
       setTimeout(() => {
         navigation.setOptions({
@@ -116,13 +123,20 @@ const FilterBottomSheet = ({
             setCurrentFilterOpen={setCurrentFilterOpen}
           />
 
+          <TagsFilterSection
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            currentFilterOpen={currentFilterOpen}
+            setCurrentFilterOpen={setCurrentFilterOpen}
+          />
+
           <TouchableOpacity
             onPress={() => {
               setFilters({
                 sort: sortValue,
                 dates: dates.startDate && dates.endDate ? dates : null,
+                tags: selectedTags ?? [],
               });
-
               setIsFilterMenuOpen(false);
             }}
             style={[

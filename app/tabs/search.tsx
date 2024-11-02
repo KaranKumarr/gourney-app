@@ -26,15 +26,18 @@ const SearchScreen = () => {
   const [filters, setFilters] = useState<any>({
     sort: null,
     dates: null,
+    tags: [],
   });
 
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
 
   const fetchData = async () => {
     setIsLoading(true);
+    console.log(filters.tags);
     const _filter: any = {
       sort: filters.sort,
       search: searchQueryRef.current.inputValue,
+      tags: filters.tags,
     };
     if (filters.dates) {
       _filter.dates = filters.dates;
