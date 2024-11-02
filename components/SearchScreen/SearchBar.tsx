@@ -1,25 +1,25 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import { getSortNameByValue } from "@/constants/constants";
-import { spacing, colors, textStyles } from "@/constants/theme";
+import { colors, spacing, textStyles } from "@/constants/theme";
 import { format, isSameDay } from "date-fns";
-import { Search, Filter, ChevronDown, CircleX } from "lucide-react-native";
+import { ChevronDown, CircleX, Filter, Search } from "lucide-react-native";
 
-const SearchBar = ({
-  searchQuery,
-  setSearchQuery,
-  fetchEntries,
-  setIsFilterMenuOpen,
-  filters,
-  clearFilters,
-}: {
-  searchQuery: string;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+type SearchBar = {
+  searchQuery: React.MutableRefObject<{ inputValue: string }>;
   fetchEntries: () => Promise<void>;
   setIsFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   filters: any;
   clearFilters: () => void;
-}) => {
+};
+
+const SearchBar = ({
+  searchQuery,
+  fetchEntries,
+  setIsFilterMenuOpen,
+  filters,
+  clearFilters,
+}: SearchBar) => {
   const [search, setSearch] = useState("");
 
   return (
@@ -45,11 +45,11 @@ const SearchBar = ({
         <Search size={24} color={colors.textLight} />
         <TextInput
           value={search}
-          onSubmitEditing={async () => {
+          onSubmitEditing={async (event) => {
             if (search.length > 0) {
+              searchQuery.current.inputValue = search;
               await fetchEntries();
               setSearch("");
-              setSearchQuery(search);
             }
           }}
           onChangeText={(text) => {
@@ -71,7 +71,7 @@ const SearchBar = ({
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row", gap: spacing.small / 2 }}>
-        {searchQuery.length > 0 && (
+        {searchQuery.current.inputValue.length > 0 && (
           <View
             style={{
               backgroundColor: colors.backgroundLight,
@@ -83,7 +83,9 @@ const SearchBar = ({
               gap: spacing.small / 2,
             }}
           >
-            <Text style={[textStyles.smallText]}>{`"${searchQuery}"`}</Text>
+            <Text
+              style={[textStyles.smallText]}
+            >{`"${searchQuery.current.inputValue}"`}</Text>
           </View>
         )}
         {filters.sort && (
@@ -132,7 +134,9 @@ const SearchBar = ({
             </Text>
           </View>
         )}
-        {filters.sort || filters.dates || searchQuery.length > 0 ? (
+        {filters.sort ||
+        filters.dates ||
+        searchQuery.current.inputValue.length > 0 ? (
           <TouchableOpacity
             onPress={clearFilters}
             style={{
