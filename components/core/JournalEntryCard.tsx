@@ -4,8 +4,15 @@ import { colors, spacing, textStyles } from "@/constants/theme";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import { JournalEntry } from "@/state/useJournalEntriesStore";
+import { Tags } from "lucide-react-native";
 
-const JournalEntryCard = ({ entry }: { entry: JournalEntry }) => {
+const JournalEntryCard = ({
+  entry,
+  showTags,
+}: {
+  entry: JournalEntry;
+  showTags?: boolean;
+}) => {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -38,6 +45,39 @@ const JournalEntryCard = ({ entry }: { entry: JournalEntry }) => {
       >
         {entry.body.trim()}
       </Text>
+
+      {showTags && (
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: spacing.small / 2,
+            alignItems: "center",
+          }}
+        >
+          {entry.tags.length > 0 && (
+            <Tags
+              style={{ marginRight: spacing.small / 2 }}
+              size={18}
+              color={colors.primary}
+            />
+          )}
+          {entry.tags.map((tag, index) => (
+            <TouchableOpacity
+              key={index}
+              style={{
+                marginTop: spacing.small / 2,
+                paddingHorizontal: spacing.small,
+                paddingVertical: spacing.small / 3,
+                borderRadius: 4,
+                backgroundColor: colors.cardLight,
+              }}
+            >
+              <Text style={[textStyles.smallText]}>{tag}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
