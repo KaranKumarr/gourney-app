@@ -1,9 +1,9 @@
 import {
   NativeSyntheticEvent,
-  TextInputChangeEventData,
   StatusBar,
+  TextInputChangeEventData,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import useJournalEntriesStore, {
   JournalEntry,
@@ -50,7 +50,7 @@ const Journal = () => {
     initialContent: "",
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
 
@@ -68,11 +68,10 @@ const Journal = () => {
       setIsLoading(false);
     };
     fetchData();
-
   }, [id]);
 
   const onTitleChange = (
-    event: NativeSyntheticEvent<TextInputChangeEventData>
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
   ) => {
     titleRef.current.inputValue = event.nativeEvent.text;
   };
@@ -82,7 +81,7 @@ const Journal = () => {
       setIsLoading(true);
       const title = titleRef.current.inputValue;
       const body = await editor.getHTML();
-      await updateEntry(entry.id, {
+      updateEntry(entry.id, {
         ...entry,
         title,
         body,
