@@ -162,7 +162,7 @@ const SearchBar = ({
             {filters.tags.map((tag: string, index: number) => (
               <Text key={index} style={[textStyles.smallText]}>
                 {tag}
-                {index === filters.tags.length - 1 ? "" : ","}
+                {filters.tags && index === filters.tags!.length - 1 ? "" : ","}
               </Text>
             ))}
           </View>
@@ -172,7 +172,7 @@ const SearchBar = ({
         {filters.sort ||
         filters.dates ||
         searchQuery.current.inputValue.length > 0 ||
-        filters.tags!.length > 0 ? (
+        (filters.tags && filters.tags!.length > 0) ? (
           <TouchableOpacity
             onPress={clearFilters}
             style={{

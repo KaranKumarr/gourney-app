@@ -1,4 +1,9 @@
-import { FlatList, RefreshControl, StatusBar } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StatusBar,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { colors, spacing } from "@/constants/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -14,7 +19,8 @@ const SearchScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
 
   const searchQueryRef = useRef<{
@@ -37,22 +43,21 @@ const SearchScreen = () => {
       sort: filters.sort,
       search: searchQueryRef.current.inputValue,
       tags: filters.tags,
+      page: 1,
     };
     if (filters.dates) {
       _filter.dates = filters.dates;
     }
-    const searchResponse = await apiPath.get("journal", _filter);
-    setJournalEntries(searchResponse.data.entries);
+    try {
+      const res = await apiPath.get("journal", _filter);
+      setJournalEntries(res.data.entries);
+      setTotalPages(res.data.totalPages);
+      setCurrentPage(res.data.currentPage);
+    } catch (e) {
+      console.log(e);
+    }
     setIsLoading(false);
   };
-
-  useEffect(() => {
-    if (filters.sort || filters.dates) {
-      fetchData();
-    }
-  }, [filters]);
-
-  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     if (
@@ -77,6 +82,36 @@ const SearchScreen = () => {
       setJournalEntries([]);
       setIsLoading(false);
     }, 300);
+  };
+
+  const loadMoreData = async () => {
+    if (currentPage < totalPages && !isFetchingMore) {
+      setIsFetchingMore(true);
+      const nextPage = Number(currentPage) + 1;
+      const _filter: any = {
+        sort: filters.sort,
+        search: searchQueryRef.current.inputValue,
+        tags: filters.tags,
+        page: nextPage,
+      };
+      if (filters.dates) {
+        _filter.dates = filters.dates;
+      }
+
+      try {
+        const res = await apiPath.get("journal", _filter);
+        setJournalEntries((prevResults) => [
+          ...prevResults,
+          ...res.data.entries,
+        ]);
+        setTotalPages(res.data.totalPages);
+        setCurrentPage(res.data.currentPage);
+      } catch (error) {
+        console.error("Load More Results Error:", error);
+      } finally {
+        setIsFetchingMore(false);
+      }
+    }
   };
 
   return (
@@ -114,8 +149,19 @@ const SearchScreen = () => {
             style={{ elevation: 2 }}
           />
         }
+        onEndReached={loadMoreData}
+        ListFooterComponent={
+          isFetchingMore ? (
+            <ActivityIndicator
+              style={{ marginTop: 16 }}
+              size="large"
+              color="#0000ff"
+            />
+          ) : null
+        }
       />
       <FilterBottomSheet
+        fetchEntries={fetchData}
         setFilters={setFilters}
         setIsFilterMenuOpen={setIsFilterMenuOpen}
         isFilterMenuOpen={isFilterMenuOpen}

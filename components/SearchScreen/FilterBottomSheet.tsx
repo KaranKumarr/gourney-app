@@ -18,10 +18,12 @@ const FilterBottomSheet = ({
   isFilterMenuOpen,
   setIsFilterMenuOpen,
   setFilters,
+  fetchEntries,
 }: {
   isFilterMenuOpen: boolean;
   setIsFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setFilters: React.Dispatch<React.SetStateAction<object>>;
+  fetchEntries(): Promise<void>;
 }) => {
   const { fetchTags } = useJournalEntriesStore();
 
@@ -131,13 +133,19 @@ const FilterBottomSheet = ({
           />
 
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
+              setIsFilterMenuOpen(false);
               setFilters({
                 sort: sortValue,
                 dates: dates.startDate && dates.endDate ? dates : null,
                 tags: selectedTags ?? [],
               });
-              setIsFilterMenuOpen(false);
+              console.log({
+                sort: sortValue,
+                dates: dates.startDate && dates.endDate ? dates : null,
+                tags: selectedTags ?? [],
+              });
+              await fetchEntries();
             }}
             style={[
               defaultStyling.primaryButton,
