@@ -3,26 +3,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { colors, spacing } from "@/constants/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FilterBottomSheet from "@/components/SearchScreen/FilterBottomSheet";
-import useJournalEntriesStore, {
-  JournalEntry,
-} from "@/state/useJournalEntriesStore";
+import { JournalEntry } from "@/state/useJournalEntriesStore";
 import JournalEntryCard from "@/components/core/JournalEntryCard";
 import Loader from "@/components/core/Loader";
 import SearchBar from "@/components/SearchScreen/SearchBar";
+import { ApiClient } from "@/constants/api";
+const apiPath = ApiClient();
 
 const SearchScreen = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+
   const searchQueryRef = useRef<{
     inputValue: string;
   }>({
     inputValue: "",
   });
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { fetchfilteredEntries } = useJournalEntriesStore();
-
-  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-
   const [filters, setFilters] = useState<any>({
     sort: null,
     dates: null,
@@ -33,7 +32,7 @@ const SearchScreen = () => {
 
   const fetchData = async () => {
     setIsLoading(true);
-    console.log(filters.tags);
+    setCurrentPage(1); // Reset current page for a new search
     const _filter: any = {
       sort: filters.sort,
       search: searchQueryRef.current.inputValue,
@@ -42,8 +41,8 @@ const SearchScreen = () => {
     if (filters.dates) {
       _filter.dates = filters.dates;
     }
-    const data = await fetchfilteredEntries(_filter);
-    setJournalEntries(data);
+    const searchResponse = await apiPath.get("journal", _filter);
+    setJournalEntries(searchResponse.data.entries);
     setIsLoading(false);
   };
 

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { ApiClient } from "@/constants/api";
+import { AxiosError } from "axios";
 
 const apiPath = ApiClient();
 
@@ -35,42 +36,73 @@ export interface NewJournalEntry {
   tags?: string[];
 }
 
+type fetchJournalEntriesParams = {
+  page?: number;
+  count?: number;
+};
+
 type JournalEntryStore = {
   journalEntries: JournalEntry[];
   tags: { tag: string; count: number }[];
-  fetchEntries: () => void;
+  fetchEntries: ({ page, count }: fetchJournalEntriesParams) => void;
+  loadNextPage: () => void;
+  resetEntries: () => void;
   fetchEntryById: (id: number) => any;
   addEntry: (entry: NewJournalEntry) => void;
   updateEntry: (id: number, entry: JournalEntry) => void;
   removeEntry: (id: number) => void;
   fetchTags: () => void;
-  fetchfilteredEntries: ({
-    sort,
-  }: {
-    sort?: string;
-    search?: string;
-    dates?: BetweenDates;
-    tags?: string[];
-  }) => any;
+  currentPage: number;
+  totalPages: number;
 };
 
 const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   journalEntries: [],
   tags: [],
+  currentPage: 0,
+  totalPages: 0,
   // Initial state
   // Action to fetch journalEntries from an API
-  fetchEntries: async () => {
-    apiPath
-      .get("journal", null)
-      .then((response) => {
-        const data: JournalEntry[] = response.data;
-        set({ journalEntries: data });
-      })
-      .catch((error) => {
-        // Handle errors, including token-related errors
-        console.error("API Error:", error);
-        console.error("API Error:", error.message);
-      });
+
+  fetchEntries: async ({ page = 1, count = 10 }) => {
+    const { totalPages } = get();
+
+    // Prevent fetching if the page is beyond the last page (except on the first fetch)
+    if (page > totalPages && page !== 1) return;
+
+    const params = {
+      page,
+      count,
+    };
+
+    try {
+      const response = await apiPath.get("journal", params);
+      const data = response.data;
+
+      set((state) => ({
+        journalEntries:
+          page === 1
+            ? data.entries
+            : [...state.journalEntries, ...data.entries],
+        currentPage: data.currentPage,
+        totalPages: data.totalPages,
+      }));
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      console.error("API Error:", axiosError);
+      console.error("API Error Message:", axiosError.message);
+    }
+  },
+
+  loadNextPage: () => {
+    const { currentPage, fetchEntries } = get();
+    const nextPage = Number(currentPage) + 1;
+    fetchEntries({ page: nextPage });
+  },
+
+  resetEntries: () => {
+    set({ journalEntries: [], currentPage: 1, totalPages: 1 });
+    get().fetchEntries({ page: 1 });
   },
 
   fetchTags: async () => {
@@ -85,25 +117,6 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
         console.error("API Error:", error);
         console.error("API Error:", error.message);
       });
-  },
-
-  fetchfilteredEntries: async ({ sort, search, dates, tags }) => {
-    let entries: JournalEntry[] = [];
-    try {
-      const res = await apiPath.get("journal", {
-        sort,
-        search,
-        dates: JSON.stringify(dates),
-        tags: JSON.stringify(tags),
-      });
-      entries = res.data;
-    } catch (error: any) {
-      // Handle errors, including token-related errors
-      console.error("API Error:", error);
-      console.error("API Error:", error!.message);
-    }
-
-    return entries;
   },
 
   fetchEntryById: async (id: number) => {

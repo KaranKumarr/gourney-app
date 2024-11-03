@@ -14,7 +14,7 @@ export default function Index() {
     const fetchToken = async () => {
       const token = await AsyncStorage.getItem("refreshToken");
       if (token) {
-        fetchEntries();
+        fetchEntries(1);
         fetchProfile();
         router.replace("/tabs/search");
       } else {
