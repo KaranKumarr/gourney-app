@@ -73,7 +73,6 @@ const TagsFilterSection = ({
                       // If the tag is not selected, add it
                       return [...prevSelectedTags, t.tag];
                     }
-                    console.log(selectedTags);
                   });
                 }}
                 style={{
