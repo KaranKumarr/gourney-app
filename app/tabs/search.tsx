@@ -154,7 +154,7 @@ const SearchScreen = () => {
         ListFooterComponent={
           isFetchingMore ? (
             <ActivityIndicator
-              style={{ marginVertical: 16 }}
+              style={{ marginVertical: spacing.small }}
               size="large"
               color={colors.primary}
             />

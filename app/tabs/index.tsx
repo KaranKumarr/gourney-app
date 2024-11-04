@@ -159,7 +159,7 @@ const Home = () => {
           <ActivityIndicator
             size="large"
             color={colors.primary}
-            style={{ marginVertical: 16 }}
+            style={{ marginVertical: spacing.small }}
           />
         )}
       </ScrollView>
