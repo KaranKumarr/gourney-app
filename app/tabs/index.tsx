@@ -158,7 +158,7 @@ const Home = () => {
         {currentPage < totalPages && (
           <ActivityIndicator
             size="large"
-            color="#0000ff"
+            color={colors.primary}
             style={{ marginVertical: 16 }}
           />
         )}
