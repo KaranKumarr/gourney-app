@@ -39,6 +39,7 @@ const SearchScreen = () => {
   const fetchData = async () => {
     setIsLoading(true);
     setCurrentPage(1); // Reset current page for a new search
+    console.log("fetchData", filters);
     const _filter: any = {
       sort: filters.sort,
       search: searchQueryRef.current.inputValue,

@@ -65,6 +65,17 @@ const FilterBottomSheet = ({
     }
   }, [isFilterMenuOpen]);
 
+  // Effect to handle filter application
+  useEffect(() => {
+    if (isFilterMenuOpen) {
+      setFilters({
+        sort: sortValue,
+        dates: dates.startDate && dates.endDate ? dates : null,
+        tags: selectedTags ?? [],
+      });
+    }
+  }, [isFilterMenuOpen, sortValue, dates, selectedTags]);
+
   return (
     <>
       {isFilterMenuOpen ? (
@@ -135,16 +146,6 @@ const FilterBottomSheet = ({
           <TouchableOpacity
             onPress={async () => {
               setIsFilterMenuOpen(false);
-              setFilters({
-                sort: sortValue,
-                dates: dates.startDate && dates.endDate ? dates : null,
-                tags: selectedTags ?? [],
-              });
-              console.log({
-                sort: sortValue,
-                dates: dates.startDate && dates.endDate ? dates : null,
-                tags: selectedTags ?? [],
-              });
               await fetchEntries();
             }}
             style={[
