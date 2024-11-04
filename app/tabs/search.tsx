@@ -43,7 +43,7 @@ const SearchScreen = () => {
     const _filter: any = {
       sort: filters.sort,
       search: searchQueryRef.current.inputValue,
-      tags: filters.tags,
+      tags: JSON.stringify(filters.tags),
       page: 1,
     };
     if (filters.dates) {
@@ -92,7 +92,7 @@ const SearchScreen = () => {
       const _filter: any = {
         sort: filters.sort,
         search: searchQueryRef.current.inputValue,
-        tags: filters.tags,
+        tags: JSON.stringify(filters.tags),
         page: nextPage,
       };
       if (filters.dates) {
