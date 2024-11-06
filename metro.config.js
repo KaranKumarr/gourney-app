@@ -1,19 +1,22 @@
-const {getDefaultConfig} = require("expo/metro-config");
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 
-module.exports = (() => {
-  const config = getDefaultConfig(__dirname);
+const config = (() => {
+  const c = getDefaultConfig(__dirname);
 
-  const {transformer, resolver} = config;
+  const { transformer, resolver } = c;
 
-  config.transformer = {
+  c.transformer = {
     ...transformer,
     babelTransformerPath: require.resolve("react-native-svg-transformer/expo"),
   };
-  config.resolver = {
+  c.resolver = {
     ...resolver,
     assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),
     sourceExts: [...resolver.sourceExts, "svg"],
   };
 
-  return config;
+  return c;
 })();
+
+module.exports = withNativeWind(config, { input: "./styles/global.css" });

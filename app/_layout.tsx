@@ -8,6 +8,7 @@ import {
 import FlashMessage from "react-native-flash-message";
 import React from "react";
 import { StatusBar } from "react-native";
+import "@/styles/global.css";
 
 export default function RootLayout() {
   let [fontsLoaded] = useFonts({

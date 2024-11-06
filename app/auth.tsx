@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StatusBar } from "react-native";
+import { SafeAreaView, ScrollView } from "react-native";
 import Forms from "@/components/AuthScreen/Forms";
 import { colors } from "@/constants/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

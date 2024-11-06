@@ -29,7 +29,7 @@ const LoginForm = () => {
       return;
     }
 
-    if (validateEmail(email) === false) {
+    if (!validateEmail(email)) {
       showMessage({
         message: "Invalid Email",
         description:
@@ -58,8 +58,8 @@ const LoginForm = () => {
         });
         return;
       }
-      AsyncStorage.setItem("accessToken", "Bearer " + data.accessToken);
-      AsyncStorage.setItem("refreshToken", data.refreshToken);
+      await AsyncStorage.setItem("accessToken", "Bearer " + data.accessToken);
+      await AsyncStorage.setItem("refreshToken", data.refreshToken);
 
       router.push("/tabs");
     } catch (error: any) {

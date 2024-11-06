@@ -13,8 +13,9 @@ export default function Index() {
   useEffect(() => {
     const fetchToken = async () => {
       const token = await AsyncStorage.getItem("refreshToken");
+
       if (token) {
-        fetchEntries(1);
+        fetchEntries({ page: 1 });
         fetchProfile();
         router.replace("/tabs/search");
       } else {
