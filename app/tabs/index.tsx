@@ -20,7 +20,6 @@ import useUserStore from "@/state/useUserStore";
 import { router } from "expo-router";
 import JournalEntryCard from "@/components/core/JournalEntryCard";
 import Animated, { LinearTransition } from "react-native-reanimated";
-import Loader from "@/components/core/Loader";
 
 const Home = () => {
   const {
@@ -30,19 +29,18 @@ const Home = () => {
     totalPages,
     loadNextPage,
   } = useJournalEntriesStore();
-  const { user } = useUserStore();
+  const { user, fetchProfile } = useUserStore();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
     resetEntries();
+    fetchProfile();
     setRefreshing(false);
   };
 
   // Handler to load the next page when reaching the end of the list
   const handleLoadMore = () => {
-    console.log("totalPages" + totalPages);
-    console.log("currentPage" + currentPage);
     if (currentPage < totalPages) {
       loadNextPage();
     }
@@ -55,7 +53,6 @@ const Home = () => {
           const layoutHeight = Math.floor(nativeEvent.layoutMeasurement.height);
           const contentOffsetY = Math.floor(nativeEvent.contentOffset.y);
           const contentHeight = Math.floor(nativeEvent.contentSize.height);
-
           // Check if the user scrolled to the bottom of the ScrollView
           const isBottom = layoutHeight + contentOffsetY >= contentHeight;
           if (isBottom) {

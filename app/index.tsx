@@ -8,15 +8,17 @@ import useUserStore from "@/state/useUserStore";
 
 export default function Index() {
   const { fetchEntries } = useJournalEntriesStore();
-  const { fetchProfile } = useUserStore();
+  const { fetchProfile, user } = useUserStore();
 
   useEffect(() => {
     const fetchToken = async () => {
       const token = await AsyncStorage.getItem("refreshToken");
       if (token) {
-        fetchEntries(1);
         fetchProfile();
-        router.replace("/tabs/search");
+        fetchEntries({ page: 1 });
+        if (user.email.length > 0) {
+          router.replace("/tabs/");
+        } else router.replace("/auth");
       } else {
         router.replace("/auth");
       }

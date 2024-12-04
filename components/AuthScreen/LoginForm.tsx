@@ -10,14 +10,19 @@ import { validateEmail } from "@/constants/validate";
 import { showMessage } from "react-native-flash-message";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import useUserStore from "@/state/useUserStore";
+import { axiosPublic } from "@/api/axiosPublic";
+import useJournalEntriesStore from "@/state/useJournalEntriesStore";
 
 const API_URL = `${process.env.EXPO_PUBLIC_GOURNEY_API_URL}auth/login`;
 
 const LoginForm = () => {
   const [passwordHidden, setPasswordHidden] = useState(true);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { fetchProfile, user } = useUserStore();
+  const { fetchEntries } = useJournalEntriesStore();
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -29,7 +34,7 @@ const LoginForm = () => {
       return;
     }
 
-    if (validateEmail(email) === false) {
+    if (!validateEmail(email)) {
       showMessage({
         message: "Invalid Email",
         description:
@@ -39,16 +44,14 @@ const LoginForm = () => {
       return;
     }
     try {
-      const response = await fetch(`${API_URL}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email.toLowerCase(), password }),
+      const response = await axiosPublic.post(`${API_URL}`, {
+        email: email.toLowerCase(),
+        password,
       });
 
-      const data = await response.json();
+      const data = response.data;
+      await AsyncStorage.setItem("accessToken", data.accessToken);
+      await AsyncStorage.setItem("refreshToken", data.refreshToken);
 
       if (response.status !== 201) {
         showMessage({
@@ -58,10 +61,12 @@ const LoginForm = () => {
         });
         return;
       }
-      AsyncStorage.setItem("accessToken", "Bearer " + data.accessToken);
-      AsyncStorage.setItem("refreshToken", data.refreshToken);
 
-      router.push("/tabs");
+      fetchProfile();
+      if (user) {
+        fetchEntries({ page: 1 });
+        router.push("/tabs");
+      }
     } catch (error: any) {
       showMessage({
         message: "Oops",

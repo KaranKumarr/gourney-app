@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { ApiClient } from "@/constants/api";
 import { AxiosError } from "axios";
+import { axiosPrivate } from "@/api/axiosPrivate";
 
-const apiPath = ApiClient();
+const BASE_API_URL = process.env.EXPO_PUBLIC_GOURNEY_API_URL;
 
 interface BetweenDates {
   startDate: Date;
@@ -70,15 +70,14 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
     // Prevent fetching if the page is beyond the last page (except on the first fetch)
     if (page > totalPages && page !== 1) return;
 
-    const params = {
+    const params: any = {
       page,
       count,
     };
 
     try {
-      const response = await apiPath.get("journal", params);
+      const response = await axiosPrivate.get(BASE_API_URL + "journal", params);
       const data = response.data;
-
       set((state) => ({
         journalEntries:
           page === 1
@@ -106,17 +105,17 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   },
 
   fetchTags: async () => {
-    apiPath
-      .get("journal/tags", null)
-      .then((response) => {
-        const data: { tag: string; count: number }[] = response.data;
-        set({ tags: data });
-      })
-      .catch((error) => {
-        // Handle errors, including token-related errors
-        console.error("API Error:", error);
-        console.error("API Error:", error.message);
-      });
+    try {
+      const res = await axiosPrivate.get(
+        BASE_API_URL + "journal/tags",
+        undefined,
+      );
+      const data: { tag: string; count: number }[] = res.data;
+      set({ tags: data });
+    } catch (error: any) {
+      console.error("fetchTags API Error:", error);
+      console.error("fetchTags API Error:", error.message);
+    }
   },
 
   fetchEntryById: async (id: number) => {
@@ -124,20 +123,21 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   },
 
   // Action to add an item
-  addEntry: (item: NewJournalEntry) => {
-    apiPath
-      .post("journal", item, undefined)
-      .then((response) => {
-        const data: JournalEntry = response.data;
-        set((state: { journalEntries: JournalEntry[] }) => ({
-          journalEntries: [data, ...state.journalEntries],
-        }));
-      })
-      .catch((error) => {
-        // Handle errors, including token-related errors
-        console.error("API Error:", error);
-        console.error("API Error:", error.message);
-      });
+  addEntry: async (item: NewJournalEntry) => {
+    try {
+      const res = await axiosPrivate.post(
+        BASE_API_URL + "journal",
+        item,
+        undefined,
+      );
+      const data: JournalEntry = res.data;
+      set((state: { journalEntries: JournalEntry[] }) => ({
+        journalEntries: [data, ...state.journalEntries],
+      }));
+    } catch (error: any) {
+      console.error("addEntry API Error:", error);
+      console.error("addEntry API Error:", error.message);
+    }
   },
 
   // Action to remove an item
@@ -152,23 +152,25 @@ const useJournalEntriesStore = create<JournalEntryStore>((set, get) => ({
   //   getItemCount: () => get().journalEntries.length,
 
   //  Update an item by id
-  updateEntry: (id: any, updatedItem: any) => {
-    apiPath
-      .patch("journal/" + id, updatedItem, undefined)
-      .then((response) => {
-        const data: JournalEntry = response.data;
-
+  updateEntry: async (id: any, updatedItem: any) => {
+    try {
+      const res = await axiosPrivate.patch(
+        BASE_API_URL + "journal/",
+        updatedItem,
+        undefined,
+      );
+      const data: JournalEntry = res.data;
+      if (data) {
         set((state: { journalEntries: any[] }) => ({
           journalEntries: state.journalEntries.map((item: { id: any }) =>
             item.id === id ? updatedItem : item,
           ),
         }));
-      })
-      .catch((error) => {
-        // Handle errors, including token-related errors
-        console.error("API Error:", error);
-        console.error("API Error:", error.message);
-      });
+      }
+    } catch (error: any) {
+      console.error("addEntry API Error:", error);
+      console.error("addEntry API Error:", error.message);
+    }
   },
 }));
 

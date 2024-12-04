@@ -12,8 +12,9 @@ import { JournalEntry } from "@/state/useJournalEntriesStore";
 import JournalEntryCard from "@/components/core/JournalEntryCard";
 import Loader from "@/components/core/Loader";
 import SearchBar from "@/components/SearchScreen/SearchBar";
-import { ApiClient } from "@/constants/api";
-const apiPath = ApiClient();
+import { axiosPrivate } from "@/api/axiosPrivate";
+
+const API_URL = process.env.EXPO_PUBLIC_GOURNEY_API_URL;
 
 const SearchScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +51,7 @@ const SearchScreen = () => {
       _filter.dates = filters.dates;
     }
     try {
-      const res = await apiPath.get("journal", _filter);
+      const res = await axiosPrivate.get(API_URL + "journal", _filter);
       setJournalEntries(res.data.entries);
       setTotalPages(res.data.totalPages);
       setCurrentPage(res.data.currentPage);
@@ -100,7 +101,7 @@ const SearchScreen = () => {
       }
 
       try {
-        const res = await apiPath.get("journal", _filter);
+        const res = await axiosPrivate.get(API_URL + "journal", _filter);
         setJournalEntries((prevResults) => [
           ...prevResults,
           ...res.data.entries,

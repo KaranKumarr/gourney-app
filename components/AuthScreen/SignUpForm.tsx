@@ -28,7 +28,7 @@ const SignUpForm = () => {
       return;
     }
 
-    if (validateEmail(email) === false) {
+    if (!validateEmail(email)) {
       showMessage({
         message: "Invalid Email",
         description:
@@ -111,7 +111,6 @@ const SignUpForm = () => {
           placeholder="Name"
           placeholderTextColor={"rgba(0,0,0,0.33)"}
         />
-
         <TextInput
           value={email}
           onChangeText={(text) => setEmail(text)}

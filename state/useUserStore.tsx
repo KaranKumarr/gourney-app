@@ -1,9 +1,8 @@
 import { create } from "zustand";
-import { ApiClient } from "@/constants/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { axiosPrivate } from "@/api/axiosPrivate";
 
-const apiPath = ApiClient();
-
+const API_URL = `${process.env.EXPO_PUBLIC_GOURNEY_API_URL}user/profile`;
 interface User {
   id: number;
   name: string;
@@ -24,27 +23,30 @@ const useUserStore = create<UserStore>((set, get) => ({
   }, // Initial state
 
   fetchProfile: async () => {
-    apiPath
-      .get("user/profile", null)
-      .then((response) => {
-        const data: User = response.data;
-        AsyncStorage.setItem("user", JSON.stringify(data));
-        console.log("backend");
-        console.log(data);
+    try {
+      const res = await axiosPrivate.get(API_URL);
+      const data: User = res.data;
+      console.log("fetchProfile");
+      console.log(data);
+
+      if (data) {
+        await AsyncStorage.setItem("user", JSON.stringify(data));
         set({ user: data });
-      })
-      .catch(async (error) => {
-        // Handle errors, including token-related errors
-        console.error("API Error:", error);
-        console.error("API Error:", error.message);
+      } else {
         const user = await AsyncStorage.getItem("user");
-        console.log("AsyncStorage");
         console.log(user);
         if (user) set({ user: JSON.parse(user) });
-      });
+      }
+    } catch (error: any) {
+      // Handle errors, including token-related errors
+      console.error("API Error fetchProfile:", error);
+      console.error("API Error fetchProfile:", error.message);
+      const user = await AsyncStorage.getItem("user");
+      if (user) set({ user: JSON.parse(user) });
+    }
   },
 
-  //  Update an user by id
+  //  Update a user by id
   updateProfile: (updatedUser: User) => set({ user: updatedUser }),
 }));
 
